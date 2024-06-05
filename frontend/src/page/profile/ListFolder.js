@@ -5,7 +5,7 @@ import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOu
 import { useNavigate } from "react-router-dom";
 import FolderPopup from '../folder/FolderPopup'
 
-function ListFolders({folders, refetch}) {
+function ListFolders({folders, refetch, isUser}) {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
 
@@ -18,18 +18,19 @@ function ListFolders({folders, refetch}) {
         refetch={refetch}
       />
       <Grid container rowSpacing={4.5} columnSpacing={2.75}>
-        {/* row 1 */}
-        <Grid item xs={12} sx={{ mb: -2.25 }}>
-          <IconButton title="Add Course" size="large" onClick={() => setOpen(true)}>
-            <AddCircleOutlineOutlinedIcon fontSize="large" />
-          </IconButton>
-        </Grid>
+        {isUser && (
+          <Grid item xs={12} sx={{ mb: -2.25 }}>
+            <IconButton title="Add Course" size="large" onClick={() => setOpen(true)}>
+              <AddCircleOutlineOutlinedIcon fontSize="large" />
+            </IconButton>
+          </Grid>        
+        )}
         {folders?.map((folder) => (
           <Grid item xs={12} sm={6} md={4} lg={3}>
             <CardFolder
               folder={folder}
               refetch={refetch}
-              enableAction={true}
+              enableAction={isUser}
               action={() => navigate(`/folder/${folder._id}`)}
             />
           </Grid>

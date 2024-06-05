@@ -21,7 +21,6 @@ import MainCard from '../MainCard';
 
 export default function CardFolder({ color = 'secondary', course, action, enableAction, refetch }) {
   const navigate = useNavigate()
-  const [open, setOpen] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [modalContent, setModalContent] = useState({});
 

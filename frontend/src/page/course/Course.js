@@ -1,51 +1,27 @@
 import React, { useEffect } from "react";
+import {useQuery} from 'react-query'
 import { useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import {Typography, Grid, Card, CardContent, Box, Button, IconButton} from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import CardItem from '../../components/card/CardItem'
 import Header from '../../components/Header';
+import rootApi from '../../api/rootApi'
+import path from '../../api/Api'
 
 function CourseDetail() {
-  const [course, setCourse] = useState();
   const [isUser, setIsUser] = useState(false);
   const { courseId } = useParams();
-  const token = localStorage.getItem("token");
   const userId = localStorage.getItem("userId");
   const navigate = useNavigate();
 
+  const {data, refetch} = useQuery(['get-course-detail', courseId], () => {
+    return rootApi.get(path.course.getDetail({courseId}))
+  })
+
   useEffect(() => {
-    if (!token || !userId) {
-      alert("No token or userId found. Redirecting to login.");
-      navigate("/login");
-      return;
-    }
-    const fetchCourse = async () => {
-      try {
-        const response = await fetch(
-          `http://localhost:8000/courses/${courseId}`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "User-ID": userId,
-            },
-          }
-        );
-        if (response.ok) {
-          const data = await response.json();
-          setCourse(data);
-          setIsUser(userId === data.userId)
-          localStorage.setItem(`cards_${courseId}`, JSON.stringify(data));
-        } else {
-          console.error("Failed to fetch cards");
-        }
-      } catch (error) {
-        console.error("Error:", error);
-      }
-    };
-    fetchCourse();
-  }, [courseId, token]);
+    setIsUser(data?.data?.userId === userId)
+  }, [data])
 
   return (
     <>
@@ -61,24 +37,32 @@ function CourseDetail() {
                     gutterBottom
                     style={{textOverflow: 'ellipsis', overflow: 'hidden'}}
                   >
-                    Course: {course?.title}
-                    <IconButton title="Edit" size="large">
-                      <EditIcon fontSize="large" onClick={() => navigate(`/update_course/${course._id}`)}/>
-                    </IconButton>
+                    Course: {data?.data?.title}
+                    {isUser && (
+                      <IconButton title="Edit" size="large">
+                        <EditIcon fontSize="large" onClick={() => navigate(`/update_course/${data?.data._id}`)}/>
+                      </IconButton>
+                    )}
                   </Typography>
 
-                  <Typography>{course?.description}</Typography>
+                  <Typography>{data?.data?.description}</Typography>
                 </Box>
                 <Button onClick={() => navigate(-1)}>Back</Button>
-                <Button onClick={() => navigate(`/flash_card/${courseId}`)}>Go to Flash Cards</Button>
-                <Button onClick={() => navigate(`/quiz/${courseId}`)}>Go to Quiz</Button>
               </Box>
             </CardContent>
           </Card>
         </Box>
-        <h2 className="cards-title">Cards Data</h2>
+        <Box display="flex" justifyContent="space-between" marginBottom={2}>
+          <Box style={{width: '80%'}}>
+            <Typography variant="h5" gutterBottom>
+              <b>Cards Data</b>
+            </Typography>
+          </Box>
+          <Button variant="contained" onClick={() => navigate(`/flash_card/${courseId}`)}>Go to Flash Cards</Button>
+          <Button variant="contained" onClick={() => navigate(`/quiz/${courseId}`)}>Go to Quiz</Button>
+        </Box>
         <Grid container spacing={2} alignItems="stretch">
-          {course?.cards?.map((card) => (
+          {data?.data?.cards?.map((card) => (
             <Grid item xs={2} key={card._id}>
               <CardItem
                 key_card={card?.key}

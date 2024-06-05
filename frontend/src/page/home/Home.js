@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
-import {Typography, Grid, Button, IconButton} from '@mui/material';
+import {Grid} from '@mui/material';
 import CardFolder from "../../components/card_folder/CardFolder";
 import CardCourse from "../../components/card_course/CardCourse";
-import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import path from '../../api/Api'
-import FolderPopup from '../folder/FolderPopup'
 import Header from '../../components/Header';
 import Light from '../../components/Light';
 
@@ -16,11 +14,6 @@ function Home() {
   const navigate = useNavigate();
   const [folders, setFolders] = useState([]);
   const [courses, setCourses] = useState([]);
-  const [selectFolder, setSelectFolder] = useState();
-  const [open, setOpen] = useState(false);
-  const [action, setAction] = useState('');
-
-  const handleOpen = () => setOpen(true);
 
   useEffect(() => {
     if (!token || !userId) {
@@ -63,25 +56,12 @@ function Home() {
 
   return (
     <>
-      <FolderPopup
-        open={open}
-        setOpen={setOpen}
-        action={action}
-      />
       <Header />
       <Grid container rowSpacing={4.5} columnSpacing={2.75} marginBottom={4}>
         {/* row 1 */}
         <Grid item xs={12} sx={{ mb: -2.25 }}>
           <Light
             title={"Folders"}
-            icon={
-              <IconButton title="Add Course" onClick={() => {
-                setAction('add')
-                handleOpen()
-              }}>
-                <AddCircleOutlineOutlinedIcon/>
-              </IconButton>
-            }
           />
         </Grid>
         {folders.map((folder) => (
@@ -98,11 +78,6 @@ function Home() {
         <Grid item xs={12} sx={{ mb: -2.25 }}>
           <Light
             title="Courses"
-            icon={
-              <IconButton title="Add Course" onClick={() => navigate('/create_course')}>
-                <AddCircleOutlineOutlinedIcon />
-              </IconButton>
-            }
           />
         </Grid>
         {courses.map((course) => (

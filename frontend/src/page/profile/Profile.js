@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import {useQuery, useMutation} from 'react-query'
+import React from "react";
+import {useQuery} from 'react-query'
 import PropTypes from 'prop-types';
 import {
   Typography,
@@ -50,7 +50,6 @@ function a11yProps(index) {
 
 function Profile() {
   const userIdmain = localStorage.getItem("userId");
-  const avatar = localStorage.getItem("avatar");
   const { userId } = useParams();
   const isUser = userIdmain === userId
   const navigate = useNavigate();
@@ -105,10 +104,10 @@ function Profile() {
           <Tab {...a11yProps(1)} label="Courses" />
         </Tabs>
         <CustomTabPanel value={value} index={0}>
-          <ListFolders folders={data?.data?.folders} refetch={refetch}/>
+          <ListFolders folders={data?.data?.folders} refetch={refetch} isUser={isUser}/>
         </CustomTabPanel>
         <CustomTabPanel value={value} index={1}>
-          <ListCourses courses={data?.data?.courses} refetch={refetch}/>
+          <ListCourses courses={data?.data?.courses} refetch={refetch} isUser={isUser}/>
         </CustomTabPanel>
       </Box>
     </div>
