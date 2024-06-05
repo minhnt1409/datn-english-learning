@@ -1,0 +1,25 @@
+.success-message {
+  position: fixed;
+  top: 50px;
+  right: 50px;
+  background-color: #28a745;
+  color: white;
+  padding: 20px 40px;
+  font-size: 18px;
+  border-radius: 5px;
+  z-index: 1000;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.error-message {
+  position: fixed;
+  top: 50px;
+  right: 50px;
+  background-color: #dc3545;
+  color: white;
+  padding: 20px 40px;
+  font-size: 18px;
+  border-radius: 5px;
+  z-index: 1000;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}

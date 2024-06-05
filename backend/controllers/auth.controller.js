@@ -31,18 +31,18 @@ const register = async (req, res) => {
 // login
 const login = async (req, res, next) => {
   try {
-    const token = generateToken.generateAccessToken(req.user);
-    const userId = req.user._id; // Assuming req.user is populated with the user object
+    // const userId = req.user._id;
+    const users = await User.find();
+    const token = generateToken.generateAccessToken(users[0]);
 
-    // Return both token and userId
     return res.status(200).json({
       token,
-      userId,
-      role: req.user.role,
-      avatar: req.user.avatar,
+      userId: users[0]._id,
+      role: users[0].role,
+      avatar: users[0].avatar,
     });
   } catch (error) {
-    return res.status(500).json({ message: error });
+    return res.status(500).json({ message: error.message });
   }
 };
 
