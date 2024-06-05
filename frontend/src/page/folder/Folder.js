@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
-import {Typography, Grid} from '@mui/material';
-import CardFolder from "../../components/card_folder/CardFolder";
+import {Typography, Grid, Card, CardContent, Box, Button, IconButton} from '@mui/material';
+import CardCourse from "../../components/card_course/CardCourse";
+import EditIcon from '@mui/icons-material/Edit';
+import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useParams } from 'react-router-dom';
-import { showMessage } from "../../components/show_message/ShowMessage";
+import FolderPopup from './FolderPopup'
+import Header from '../../components/Header';
 
 function Folder() {
   const token = localStorage.getItem("token");
@@ -17,12 +20,10 @@ function Folder() {
   const [isUser, setIsUser] = useState(false);
   const [description, setDescription] = useState("");
   const [refetch, setRefetch] = useState(false);
-  const [popupEdit, setPopupEdit] = useState(false);
-  const [popupAddCourse, setPopupAddCourse] = useState(false);
-  const [availableCourses, setAvailableCourses] = useState([]);
-  const [selectedCourses, setSelectedCourses] = useState([]);
-  const [newFolderTitle, setNewFolderTitle] = useState("");
-  const [newFolderDescription, setNewFolderDescription] = useState("");
+  const [open, setOpen] = useState(false);
+  const [action, setAction] = useState('');
+
+  const handleOpen = () => setOpen(true);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -54,146 +55,57 @@ function Folder() {
     fetchCourses();
   }, [folderId, refetch]);
 
-  const handleDelete = async (courseId) => {
-    try {
-      const response = await axios.delete(`http://localhost:8000/folders/delete-course/${folderId}/${courseId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      if (response.status !== 200) {
-        showMessage("Error", "Deleted Failed", "danger");
-      } else {
-        showMessage("Success", "Delete Folder Successfully", "success")
-        setRefetch(!refetch);
-      }
-    } catch (error) {
-      showMessage("Error", "Deleted Failed", "danger");
-    }
-  };
-
-  const handleEdit = async () => {
-    try {
-      const response = await axios.put(
-        `http://localhost:8000/folders/${folderId}`,
-        { title: newFolderTitle, description: newFolderDescription },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (response.status !== 200) {
-        showMessage("Error", "Updated Failed", "danger");
-      } else {
-        setNewFolderTitle("");
-        setNewFolderDescription("");
-        showMessage("Success", "Updated Folder Successfully", "success")
-        setRefetch(!refetch);
-      }
-      setPopupEdit(false)
-    } catch (error) {
-      showMessage("Error", "Updated Failed", "danger");
-    }
-  };
-
-  const fetchUserCourses = async () => {
-    try {
-      const response = await axios.get(`http://localhost:8000/courses/my/${userId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const userCourses = response.data
-
-      const available = userCourses.filter(course => 
-        !courses.some(folderCourse => folderCourse._id === course._id)
-      );
-
-      setAvailableCourses(available);
-      setPopupAddCourse(true);
-    } catch (error) {
-      showMessage("Error", "Failed to fetch courses", "danger");
-    }
-  };
-
-  const handleCourseSelection = (courseId) => {
-    setSelectedCourses(prevSelected =>
-      prevSelected.includes(courseId)
-        ? prevSelected.filter(id => id !== courseId)
-        : [...prevSelected, courseId]
-    );
-  };
-
-  const handleAddCoursesToFolder = async () => {
-    try {
-      for (const courseId of selectedCourses) {
-        await handleAddCourse(courseId);
-      }
-      setPopupAddCourse(false);
-      setRefetch(!refetch);
-      setSelectedCourses([]);
-    } catch (error) {
-      showMessage("Error", "Failed to add courses", "danger");
-    }
-  };
-
-  const handleAddCourse = async (courseId) => {
-    try {
-      const response = await axios.put(
-        `http://localhost:8000/folders/add-course/${folderId}/${courseId}`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "User-ID": userId,
-          },
-        }
-      );
-      if (response.status !== 200) {
-        showMessage("Error", "Adding Course Failed", "danger");
-      } else {
-        showMessage("Success", "Course Added Successfully", "success");
-      }
-    } catch (error) {
-      showMessage("Error", "Adding Course Failed", "danger");
-    }
-  };
-
   return (
     <div>
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <div className="cfirst">
-        <div className="cfirst__heading">
-          <div className="cfirst__title">
+      <FolderPopup
+        open={open}
+        setOpen={setOpen}
+        action={action}
+        description={description}
+        title={title}
+        folderId={folderId}
+        refetch={refetch}
+        setRefetch={setRefetch}
+      />
+      <Header />
+      <Box mb={2} marginTop={2}>
+        <Card elevation={1}>
+          <CardContent style={{padding: 24}}>
+            <Box display="flex" justifyContent="space-between">
+              <Box style={{width: '80%'}}>
+                <Typography
+                  variant="h2"
+                  gutterBottom
+                  style={{textOverflow: 'ellipsis', overflow: 'hidden'}}
+                >
+                  Folder: {title}
+                  <IconButton title="Edit" size="large">
+                    <EditIcon fontSize="large" onClick={() => {
+                      setAction('edit')
+                      handleOpen()
+                    }}/>
+                  </IconButton>
+                  <IconButton title="Add Course" size="large" onClick={() => navigate(`create_course`)}>
+                    <AddCircleOutlineOutlinedIcon fontSize="large" />
+                  </IconButton>
+                </Typography>
 
-            <h1>Folder: {title}</h1>
-          </div>
-          <svg
-            className="cfirst__back"
-            onClick={() => navigate(-1)}
-            xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 24 24"><path fill="currentColor" d="m7.825 13l4.9 4.9q.3.3.288.7t-.313.7q-.3.275-.7.288t-.7-.288l-6.6-6.6q-.15-.15-.213-.325T4.426 12t.063-.375t.212-.325l6.6-6.6q.275-.275.688-.275t.712.275q.3.3.3.713t-.3.712L7.825 11H19q.425 0 .713.288T20 12t-.288.713T19 13z" /></svg>
-
-        </div>
-        <div className="cfirst__filter">
-          <h2>{description}</h2>
-        </div>
-      </div>
+                <Typography>{description}</Typography>
+              </Box>
+              <Button onClick={() => navigate(-1)}>Back</Button>
+            </Box>
+          </CardContent>
+        </Card>
+      </Box>
 
       <Grid container rowSpacing={4.5} columnSpacing={2.75}>
         {/* row 1 */}
         <Grid item xs={12} sx={{ mb: -2.25 }}>
-          <Typography variant="h5">Courses</Typography>
+          <Typography variant="h5">Courses (Total: {courses.length})</Typography>
         </Grid>
         {courses.map((course) => (
           <Grid item xs={12} sm={6} md={4} lg={3}>
-            <CardFolder
+            <CardCourse
               title={course.title}
               count={course.cards.length}
               description={course.description}

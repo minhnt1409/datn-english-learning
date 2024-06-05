@@ -10,7 +10,7 @@ import Box from '@mui/material/Box';
 // project import
 import MainCard from '../MainCard';
 
-export default function CardFolder({ color = 'primary', title, count, description, action }) {
+export default function CardFolder({ color = 'secondary', title, count, description, action }) {
   return (
     <MainCard contentSX={{ p: 2.25 }} onClick={action}>
       <Stack spacing={0.5}>

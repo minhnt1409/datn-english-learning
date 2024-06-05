@@ -1,6 +1,10 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
+import {Typography, Grid, Card, CardContent, Box, Button, IconButton} from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import CardItem from '../../components/card/CardItem'
+import Header from '../../components/Header';
 
 function CourseDetail() {
   const [course, setCourse] = useState();
@@ -45,40 +49,44 @@ function CourseDetail() {
 
   return (
     <>
-    <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
       <div>
-        <div className="course-detail__top">
-          <div className='course-detail-top-container'>
-            <h1 className="course-detail__name">Course: {course?.title}</h1>
-            <svg className="xstudy__arrow" onClick={() => navigate(-1)} xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 24 24"><path fill="currentColor" d="m7.825 13l4.9 4.9q.3.3.288.7t-.313.7q-.3.275-.7.288t-.7-.288l-6.6-6.6q-.15-.15-.213-.325T4.426 12t.063-.375t.212-.325l6.6-6.6q.275-.275.688-.275t.712.275q.3.3.3.713t-.3.712L7.825 11H19q.425 0 .713.288T20 12t-.288.713T19 13z" /></svg>
+        <Header />
+        <Box mb={2} marginTop={2}>
+          <Card elevation={1}>
+            <CardContent style={{padding: 24}}>
+              <Box display="flex" justifyContent="space-between">
+                <Box style={{width: '80%'}}>
+                  <Typography
+                    variant="h2"
+                    gutterBottom
+                    style={{textOverflow: 'ellipsis', overflow: 'hidden'}}
+                  >
+                    Course: {course?.title}
+                    <IconButton title="Edit" size="large">
+                      <EditIcon fontSize="large" onClick={() => navigate(`/update_course/${course._id}`)}/>
+                    </IconButton>
+                  </Typography>
 
-          </div>
-          <div className="buttons-container">
-            <button className="flash-button">
-              <Link to={`/flash_card/${courseId}`}>Go to Flash Cards</Link>
-            </button>
-            <button className="quiz-button">
-              <Link to={`/quiz/${courseId}`}>Go to Quiz</Link>
-            </button>
-
-          </div>
-        </div>
-        <h2 className='course-detail__desc'>{course?.description}</h2>
+                  <Typography>{course?.description}</Typography>
+                </Box>
+                <Button onClick={() => navigate(-1)}>Back</Button>
+                <Button onClick={() => navigate(`/flash_card/${courseId}`)}>Go to Flash Cards</Button>
+                <Button onClick={() => navigate(`/quiz/${courseId}`)}>Go to Quiz</Button>
+              </Box>
+            </CardContent>
+          </Card>
+        </Box>
         <h2 className="cards-title">Cards Data</h2>
-        <div className="cards-container">
+        <Grid container spacing={2} alignItems="stretch">
           {course?.cards?.map((card) => (
-            <div className="card" key={card._id}>
-              <div className="card-key">{card.key}</div>
-              <div className="card-value">{card.value}</div>
-            </div>
+            <Grid item xs={2} key={card._id}>
+              <CardItem
+                key_card={card?.key}
+                value={card?.value}
+              />
+            </Grid>
           ))}
-        </div>
+        </Grid>
       </div>
     </>
   );

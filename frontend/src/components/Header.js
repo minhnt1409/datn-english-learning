@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useNavigate } from "react-router-dom";
 
 import Box from '@mui/material/Box';
 import AppBar from '@mui/material/AppBar';
@@ -19,23 +20,11 @@ const logoStyle = {
   height: 'auto',
   cursor: 'pointer',
 };
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 function AppAppBar() {
   const token = localStorage.getItem("token");
-
-  const scrollToSection = (sectionId) => {
-    const sectionElement = document.getElementById(sectionId);
-    const offset = 128;
-    if (sectionElement) {
-      const targetScroll = sectionElement.offsetTop - offset;
-      sectionElement.scrollIntoView({ behavior: 'smooth' });
-      window.scrollTo({
-        top: targetScroll,
-        behavior: 'smooth',
-      });
-    }
-  };
+  const userId = localStorage.getItem("userId");
+  const navigate = useNavigate()
 
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -43,8 +32,11 @@ function AppAppBar() {
     setAnchorElUser(event.currentTarget);
   };
 
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
 
-  const handleCloseUserMenu = async () => {
+  const handleLogout = async () => {
     try {
       const response = await axios.post(
         `http://localhost:8000/auth/logout`,
@@ -118,6 +110,7 @@ function AppAppBar() {
                 }
                 style={logoStyle}
                 alt="logo of sitemark"
+                onClick={() => navigate('/')}
               />
               {/* <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
                 <MenuItem
@@ -158,21 +151,22 @@ function AppAppBar() {
                     anchorEl={anchorElUser}
                     anchorOrigin={{
                       vertical: 'top',
-                      horizontal: 'right',
+                      horizontal: 'center',
                     }}
                     keepMounted
                     transformOrigin={{
                       vertical: 'top',
-                      horizontal: 'right',
+                      horizontal: 'center',
                     }}
                     open={Boolean(anchorElUser)}
                     onClose={handleCloseUserMenu}
                   >
-                    {settings.map((setting) => (
-                      <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                        <Typography textAlign="center">{setting}</Typography>
-                      </MenuItem>
-                    ))}
+                    <MenuItem onClick={() => navigate(`/profile/${userId}`)}>
+                      <Typography textAlign="center">Profile</Typography>
+                    </MenuItem>
+                    <MenuItem onClick={handleLogout}>
+                      <Typography textAlign="center">Logout</Typography>
+                    </MenuItem>
                   </Menu>
                 </>
               ) : (
