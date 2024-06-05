@@ -7,46 +7,13 @@ import axios from 'axios'
  */
 export function getToken(tokenType) {
   try {
-    const state = localStorage.getItem('state')
-    if (state) {
-      const userInfo = JSON.parse(state).user
-      if (userInfo) {
-        return userInfo[tokenType]
-      }
-      return 'none'
+    const token = localStorage.getItem('token')
+    if (token) {
+      return token
     }
     return 'none'
   } catch (e) {
     return 'none'
-  }
-}
-
-export function getTenantId() {
-  try {
-    const state = localStorage.getItem('state')
-    if (state) {
-      const userInfo = JSON.parse(state).user
-      if (userInfo) {
-        return userInfo.tenantId
-      }
-      return ''
-    }
-    return ''
-  } catch (e) {
-    return ''
-  }
-}
-
-export function getUserInfo() {
-  try {
-    const state = localStorage.getItem('state')
-    if (state) {
-      const userInfo = JSON.parse(state).user
-      return userInfo
-    }
-    return {}
-  } catch (e) {
-    return {}
   }
 }
 
@@ -72,7 +39,6 @@ const rootApi = axios.create(defaultOptions)
 
 rootApi.interceptors.request.use((config) => {
   const overrideHeader = config
-  overrideHeader.headers.OrgId = getTenantId()
   return overrideHeader
 })
 

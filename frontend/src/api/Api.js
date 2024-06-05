@@ -8,9 +8,14 @@ const path = {
   },
   folder: {
     listRandom: ({userId, limit}) => `${apiPath}/folders/list/${userId}?limit=${limit}`,
+    delete: ({folderId}) => `${apiPath}/folders/${folderId}`,
   },
   course: {
     listRandom: ({userId, limit}) => `${apiPath}/courses/list/${userId}?limit=${limit}`,
+    delete: ({courseId}) => `${apiPath}/courses/${courseId}`,
+  },
+  user: {
+    getUser: ({userId}) => `${apiPath}/users/${userId}`,
   },
 }
 

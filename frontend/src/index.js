@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { QueryClient, QueryClientProvider, useQuery } from 'react-query'
 //import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
@@ -7,10 +8,13 @@ import { ReactNotifications } from 'react-notifications-component'
 import 'react-notifications-component/dist/theme.css'
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+const queryClient = new QueryClient()
 root.render(
   <React.StrictMode>
-    <ReactNotifications />
-    <App />
+    <QueryClientProvider client={queryClient}>
+      <ReactNotifications />
+      <App />
+    </QueryClientProvider>
   </React.StrictMode>
 );
 

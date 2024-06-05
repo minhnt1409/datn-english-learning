@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import {useQuery, useMutation} from 'react-query'
 import PropTypes from 'prop-types';
 import {
   Typography,
-  Grid,
   Card,
   CardContent,
   Box,
   Button,
-  IconButton,
   Avatar,
   Stack,
   Tab,
@@ -16,10 +14,10 @@ import {
 } from '@mui/material';
 import { useNavigate, useParams } from "react-router-dom";
 import Header from "../../components/Header";
-import { showMessage } from "../../components/show_message/ShowMessage";
 import ListFolders from "./ListFolder";
 import ListCourses from "./ListCourse";
-import axios from "axios";
+import rootApi from '../../api/rootApi'
+import path from '../../api/Api'
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -51,48 +49,21 @@ function a11yProps(index) {
 }
 
 function Profile() {
-  const [folders, setFolders] = useState([]);
-  const [courses, setCourses] = useState([]);
-  const [user, setUser] = useState();
-  const token = localStorage.getItem("token");
   const userIdmain = localStorage.getItem("userId");
   const avatar = localStorage.getItem("avatar");
   const { userId } = useParams();
   const isUser = userIdmain === userId
   const navigate = useNavigate();
-  const [refetch, setRefetch] = useState(false);
+  // const [refetch, setRefetch] = useState(false);
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
-  useEffect(() => {
-    if (token && userId) {
-      const fetchUser = async () => {
-        try {
-          const response = await axios.get(
-            `http://localhost:8000/users/${userId}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-          setFolders(response.data.folders);
-          setCourses(response.data.courses);
-          setUser(response.data);
-        } catch (error) {
-          console.error("Error fetching user:", error);
-        }
-      };
-
-      fetchUser();
-    } else {
-      alert("No token found. Redirecting to login.");
-      navigate("/login");
-    }
-  }, [token, userId, refetch]);
+  const {data, refetch} = useQuery(['profile', userId], () => {
+    return rootApi.get(path.user.getUser({userId}))
+  })
 
   return (
     <div>
@@ -113,7 +84,7 @@ function Profile() {
                     gutterBottom
                     style={{textOverflow: 'ellipsis', overflow: 'hidden'}}
                   >
-                    {user?.username}
+                    {data?.data?.username}
                   </Typography>
                 </Stack>
               </Box>
@@ -134,10 +105,10 @@ function Profile() {
           <Tab {...a11yProps(1)} label="Courses" />
         </Tabs>
         <CustomTabPanel value={value} index={0}>
-          <ListFolders folders={folders}/>
+          <ListFolders folders={data?.data?.folders} refetch={refetch}/>
         </CustomTabPanel>
         <CustomTabPanel value={value} index={1}>
-          <ListCourses courses={courses}/>
+          <ListCourses courses={data?.data?.courses} refetch={refetch}/>
         </CustomTabPanel>
       </Box>
     </div>

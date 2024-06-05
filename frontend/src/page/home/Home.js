@@ -8,6 +8,7 @@ import axios from "axios";
 import path from '../../api/Api'
 import FolderPopup from '../folder/FolderPopup'
 import Header from '../../components/Header';
+import Light from '../../components/Light';
 
 function Home() {
   const token = localStorage.getItem("token");
@@ -68,49 +69,46 @@ function Home() {
         action={action}
       />
       <Header />
-      <Grid container rowSpacing={4.5} columnSpacing={2.75}>
+      <Grid container rowSpacing={4.5} columnSpacing={2.75} marginBottom={4}>
         {/* row 1 */}
         <Grid item xs={12} sx={{ mb: -2.25 }}>
-          <Typography variant="h5">
-            Folders
-            <IconButton title="Add Course" size="large" onClick={() => {
-              setAction('add')
-              handleOpen()
-            }}>
-              <AddCircleOutlineOutlinedIcon fontSize="large" />
-            </IconButton>
-          </Typography>
+          <Light
+            title={"Folders"}
+            icon={
+              <IconButton title="Add Course" onClick={() => {
+                setAction('add')
+                handleOpen()
+              }}>
+                <AddCircleOutlineOutlinedIcon/>
+              </IconButton>
+            }
+          />
         </Grid>
         {folders.map((folder) => (
           <Grid item xs={12} sm={6} md={4} lg={3}>
             <CardFolder
-              title={folder.title}
-              count={folder.courses.length}
-              description={folder.description}
+              folder={folder}
               action={() => navigate(`/folder/${folder._id}`)}
             />
           </Grid>
         ))}
       </Grid>
-      <br />
-      <br />
-      <Grid container rowSpacing={4.5} columnSpacing={2.75}>
+      <Grid container rowSpacing={4.5} columnSpacing={2.75} marginBottom={4}>
         {/* row 1 */}
         <Grid item xs={12} sx={{ mb: -2.25 }}>
-          <Typography variant="h5">
-            Courses
-            <IconButton title="Add Course" size="large" onClick={() => navigate('/create_course')}>
-              <AddCircleOutlineOutlinedIcon fontSize="large" />
-            </IconButton>
-          </Typography>
+          <Light
+            title="Courses"
+            icon={
+              <IconButton title="Add Course" onClick={() => navigate('/create_course')}>
+                <AddCircleOutlineOutlinedIcon />
+              </IconButton>
+            }
+          />
         </Grid>
         {courses.map((course) => (
           <Grid item xs={12} sm={6} md={4} lg={3}>
             <CardCourse
-              title={course.title}
-              count={course.cards.length}
-              description={course.description}
-              color="secondary"
+              course={course}
               action={() => navigate(`/course/${course._id}`)}
             />
           </Grid>

@@ -19,7 +19,7 @@ const style = {
   p: 4,
 };
 
-export default function BasicModal({open, setOpen, action, folderId, title, description, setRefetch, refetch}) {
+export default function BasicModal({open, setOpen, action, folderId, title, description, refetch}) {
   const handleClose = () => setOpen(false);
   const token = localStorage.getItem("token");
   const userId = localStorage.getItem("userId");
@@ -42,7 +42,7 @@ export default function BasicModal({open, setOpen, action, folderId, title, desc
           showMessage("Error", "Updated Failed", "danger");
         } else {
           showMessage("Success", "Updated Folder Successfully", "success")
-          setRefetch(!refetch)
+          refetch()
         }
         setOpen(false)
       } catch (error) {
@@ -61,6 +61,7 @@ export default function BasicModal({open, setOpen, action, folderId, title, desc
         );
         if (response.status === 200 || response.status === 201) {
           showMessage("Success", "Created Successfully", "success");
+          refetch()
         } else {
           showMessage("Error", "Created Fail", "danger");
         }
