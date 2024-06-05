@@ -98,6 +98,9 @@ export default function SignIn() {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
+            background: '#fff',
+            padding: 2,
+            borderRadius: 5
           }}
         >
           <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>

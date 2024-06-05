@@ -7,12 +7,14 @@ import Profile from './page/profile/Profile';
 import CreateCourse from './page/course/create-course/CreateCourse';
 import UpdateCourse from './page/course/update-course/UpdateCourse';
 import SignIn from './page/sign_in/SignIn';
+import SignUp from './page/sign_up/SignUp';
 
 function App() {
   return (
     <Router>
       <Routes>
-      <Route path="/sign-in" element={<SignIn />} />
+      <Route path="/sign_up" element={<SignUp />} />
+      <Route path="/sign_in" element={<SignIn />} />
         <Route path="/" element={<Home />} />
         <Route path="/folder/:folderId" element={<Folder />} />
         <Route path="/course/:courseId" element={<Course />} />

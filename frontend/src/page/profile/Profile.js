@@ -112,6 +112,8 @@ function Profile() {
         <CustomTabPanel value={value} index={1}>
           <ListCourses courses={data?.data?.courses} refetch={refetch} isUser={isUser} />
         </CustomTabPanel>
+        <br />
+        <br />
       </Box>
     </div>
   );
