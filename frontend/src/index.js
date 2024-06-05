@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { QueryClient, QueryClientProvider, useQuery } from 'react-query'
-//import './index.css';
+import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { ReactNotifications } from 'react-notifications-component'

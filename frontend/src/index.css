@@ -1,0 +1,6 @@
+body {
+  background: linear-gradient(to right, #5f92ff, #7bcafe); /* Example gradient background */
+  background-size: cover;
+  margin: 1;
+  font-family: Arial, sans-serif;
+}

@@ -1,7 +1,9 @@
-import * as React from 'react';
-import { useNavigate } from "react-router-dom";
-
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import SvgIcon from '@mui/material/SvgIcon';
 import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Button from '@mui/material/Button';
@@ -12,21 +14,18 @@ import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
-import { showMessage } from "../components/show_message/ShowMessage";
-import axios from "axios";
-
-const logoStyle = {
-  width: '140px',
-  height: 'auto',
-  cursor: 'pointer',
-};
+import axios from 'axios';
+import { showMessage } from '../components/show_message/ShowMessage';
+import { ReactComponent as Logo } from '../assets/svg/logo.svg';
+import Light from './Light';
 
 function AppAppBar() {
-  const token = localStorage.getItem("token");
-  const userId = localStorage.getItem("userId");
-  const navigate = useNavigate()
+  const token = localStorage.getItem('token');
+  const avatar = localStorage.getItem('avatar');
+  const userId = localStorage.getItem('userId');
+  const navigate = useNavigate();
 
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const [anchorElUser, setAnchorElUser] = useState(null);
 
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
@@ -48,17 +47,46 @@ function AppAppBar() {
         }
       );
       if (response.status === 200) {
-        showMessage("Success", "Logout Successfully", "success");
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
+        showMessage('Success', 'Logout Successfully', 'success');
+        localStorage.removeItem('token');
+        localStorage.removeItem('userId');
+        localStorage.removeItem('role');
+        localStorage.removeItem('avatar');
+        navigate('/sign-in');
       } else {
-        showMessage("Error", "Logout Fail", "danger");
+        showMessage('Error', 'Logout Fail', 'danger');
       }
     } catch (error) {
-      showMessage("Error", "Logout Fail", "danger");
+      showMessage('Error', 'Logout Fail', 'danger');
     }
     setAnchorElUser(null);
+  };
+
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState({
+    folders: [],
+    courses: [],
+    users: [],
+  });
+
+  const handleSearchChange = async (event) => {
+    const query = event.target.value;
+    setSearchQuery(query);
+
+    if (query) {
+      try {
+        const response = await axios.get(`http://localhost:8000/other/search/${query}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setSearchResults(response.data);
+      } catch (error) {
+        console.error('Error fetching search results:', error);
+      }
+    } else {
+      setSearchResults({ folders: [], courses: [], users: [] });
+    }
   };
 
   return (
@@ -75,25 +103,18 @@ function AppAppBar() {
         <Container maxWidth="lg">
           <Toolbar
             variant="regular"
-            sx={(theme) => ({
+            sx={{
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
               flexShrink: 0,
               borderRadius: '999px',
-              bgcolor:
-                theme.palette.mode === 'light'
-                  ? 'rgba(255, 255, 255, 0.4)'
-                  : 'rgba(0, 0, 0, 0.4)',
+              bgcolor: 'rgba(255, 255, 255, 0.4)',
               backdropFilter: 'blur(24px)',
-              maxHeight: 40,
               border: '1px solid',
               borderColor: 'divider',
-              boxShadow:
-                theme.palette.mode === 'light'
-                  ? `0 0 1px rgba(85, 166, 246, 0.1), 1px 1.5px 2px -1px rgba(85, 166, 246, 0.15), 4px 4px 12px -2.5px rgba(85, 166, 246, 0.15)`
-                  : '0 0 1px rgba(2, 31, 59, 0.7), 1px 1.5px 2px -1px rgba(2, 31, 59, 0.65), 4px 4px 12px -2.5px rgba(2, 31, 59, 0.65)',
-            })}
+              boxShadow: `0 0 1px rgba(85, 166, 246, 0.1), 1px 1.5px 2px -1px rgba(85, 166, 246, 0.15), 4px 4px 12px -2.5px rgba(85, 166, 246, 0.15)`,
+            }}
           >
             <Box
               sx={{
@@ -104,32 +125,102 @@ function AppAppBar() {
                 px: 0,
               }}
             >
-              <img
-                src={
-                  'https://assets-global.website-files.com/61ed56ae9da9fd7e0ef0a967/61f12e6faf73568658154dae_SitemarkDefault.svg'
-                }
-                style={logoStyle}
-                alt="logo of sitemark"
+              <SvgIcon
+                component={Logo}
+                style={{ fontSize: 40, margin: 10 }}
+                viewBox="0 0 80 80"
+                color="inherit"
                 onClick={() => navigate('/')}
               />
-              {/* <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-                <MenuItem
-                  onClick={() => scrollToSection('folders')}
-                  sx={{ py: '6px', px: '12px' }}
-                >
-                  <Typography variant="body2" color="text.primary">
-                    Folders
-                  </Typography>
-                </MenuItem>
-                <MenuItem
-                  onClick={() => scrollToSection('courses')}
-                  sx={{ py: '6px', px: '12px' }}
-                >
-                  <Typography variant="body2" color="text.primary">
-                    Courses
-                  </Typography>
-                </MenuItem>
-              </Box> */}
+              <Typography variant="h6" sx={{ ml: 1 }}>
+                Learning English
+              </Typography>
+              <Box sx={{ flexGrow: 1 }}>
+                <input
+                  type="text"
+                  placeholder="Search for folders, courses, users"
+                  value={searchQuery}
+                  onChange={handleSearchChange}
+                  style={{
+                    width: '50%',
+                    marginLeft: '15%',
+                    padding: '8px 16px',
+                    borderRadius: '999px',
+                    border: 'none',
+                    outline: 'none',
+                    fontSize: '14px',
+                    backgroundColor: 'rgba(255, 255, 255, 0.6)',
+                  }}
+                />
+                {searchQuery && (
+                  <Card
+                    style={{
+                      position: 'absolute',
+                      top: '100%',
+                      left: '51%',
+                      border: '1px solid #ddd',
+                      boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+                      transform: 'translateX(-50%)',
+                      maxWidth: '500px',
+                      width: '100%',
+                      zIndex: '1000',
+                    }}
+                  >
+                    <CardContent>
+                      {searchResults.folders.length > 0 && (
+                        <div>
+                          <Light title={`Folders (${searchResults.folders.length})`} />
+                          <ul>
+                            {searchResults.folders.map((folder) => (
+                              <li
+                                key={folder._id}
+                                onClick={() => navigate(`/folder/${folder._id}`)}
+                              >
+                                {folder.title}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                      {searchResults.courses.length > 0 && (
+                        <div>
+                          <Light title={`Courses (${searchResults.courses.length})`} />
+                          <ul>
+                            {searchResults.courses.map((course) => (
+                              <li
+                                key={course._id}
+                                onClick={() => navigate(`/course/${course._id}`)}
+                              >
+                                {course.title}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                      {searchResults.users.length > 0 && (
+                        <div>
+                          <Light title={`Users (${searchResults.users.length})`} />
+                          <ul>
+                            {searchResults.users.map((user) => (
+                              <li
+                                key={user._id}
+                                onClick={() => navigate(`/profile/${user._id}`)}
+                              >
+                                {user.username}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                      {searchResults.folders.length === 0 &&
+                        searchResults.courses.length === 0 &&
+                        searchResults.users.length === 0 && (
+                          <div>No results found.</div>
+                        )}
+                    </CardContent>
+                  </Card>
+                )}
+              </Box>
             </Box>
             <Box
               sx={{
@@ -142,7 +233,7 @@ function AppAppBar() {
                 <>
                   <Tooltip title="Open settings">
                     <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                      <Avatar alt="avatar" src="/assets/img/luffy.png" />
+                      <Avatar alt="avatar" src={avatar} />
                     </IconButton>
                   </Tooltip>
                   <Menu

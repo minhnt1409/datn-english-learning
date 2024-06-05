@@ -6,6 +6,7 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { showMessage } from "../../../components/show_message/ShowMessage";
 import Header from '../../../components/Header';
+import Light from "../../../components/Light";
 
 const UpdateCourse = () => {
   const navigate = useNavigate();
@@ -13,7 +14,6 @@ const UpdateCourse = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [listCard, setListCard] = useState([]);
-  const folderId = useParams();
 
   const token = localStorage.getItem("token");
   const userId = localStorage.getItem("userId");
@@ -101,105 +101,100 @@ const UpdateCourse = () => {
 
   return (
     <div>
-      <div>
-        <Header />
-        <Box mb={2} marginTop={2} borderRadius={30}>
-          <Card elevation={1}>
-            <CardContent style={{padding: 24}}>
-              <Box display="flex" justifyContent="space-between">
-                <Box style={{width: '80%'}}>
-                  <Typography
-                    variant="h2"
-                    gutterBottom
-                    style={{textOverflow: 'ellipsis', overflow: 'hidden'}}
-                  >
-                    Update Course
-                  </Typography>
-                </Box>
-                <Button onClick={() => navigate(-1)}>Back</Button>
+      <Header />
+      <Box mb={2} marginTop={2}>
+        <Card elevation={3} sx={{ borderRadius: '12px', padding: '16px', backgroundColor: '#fff', boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)' }}>
+          <CardContent style={{padding: 24}}>
+            <Box display="flex" justifyContent="space-between" alignItems="center">
+              <Box style={{width: '80%'}}>
+                <Typography variant="h2" gutterBottom>
+                  Update Course
+                </Typography>
+                <Typography>Update course</Typography>
               </Box>
-            </CardContent>
-          </Card>
-        </Box>
-        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="title"
-            label="Title"
-            name="title"
-            // defaultValue={title}
-            value={title}
-          />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            name="description"
-            label="Description"
-            type="description"
-            id="description"
-            // defaultValue={description}
-            value={description}
-          />
-          <Typography>List Cards</Typography>
-          {Array.from({ length: count }).map((_, i) => (
-            <Grid container spacing={1} alignItems="stretch">
-              <Grid item xs={1}>
-                <Typography
-                  variant="h2"
-                  gutterBottom
-                >{i + 1}</Typography>
-              </Grid>
-              <Grid item xs={5}>
-                <TextField
-                  type="text"
-                  id={`quizzTitle${i + 1}`}
-                  value={listCard[i]?.key || ""}
-                  onChange={(e) => handleWordChange(i, e.target.value)}
-                  required
-                  fullWidth
-                  margin="normal"
-                  label="Word"
-                  name="word"
-                />
-              </Grid>
-              <Grid item xs={5}>
-                <TextField
-                  type="text"
-                  id={`quizzMeaning${i + 1}`}
-                  value={listCard[i]?.value || ""}
-                  onChange={(e) => handleMeaningChange(i, e.target.value)}
-                  margin="normal"
-                  fullWidth
-                  required
-                  label="Meaning"
-                  name="meaning"
-                />
-              </Grid>
-              {count > 4 && (
-                <Grid item xs={1}>
-                  <IconButton title="Add Course" size="large">
-                    <DeleteOutlineIcon fontSize="large" onClick={() => handleDeleteClick(i)}/>
-                  </IconButton>
-                </Grid>
-              )}
+              <Button onClick={() => navigate(-1)} variant="contained">Back</Button>
+            </Box>
+          </CardContent>
+        </Card>
+      </Box>
+      <Box component="form" onSubmit={handleSubmit} noValidate sx={{ borderRadius: '12px', padding: '16px', mt: 1, background: "#fff" }}>
+        <Light title={"Information"} />
+        <TextField
+          margin="normal"
+          required
+          fullWidth
+          id="title"
+          label="Title"
+          name="title"
+          value={title}
+        />
+        <TextField
+          margin="normal"
+          required
+          fullWidth
+          name="description"
+          label="Description"
+          type="description"
+          id="description"
+          value={description}
+        />
+        <Light title={"List Cards"} />
+        {Array.from({ length: count }).map((_, i) => (
+          <Grid container spacing={1} alignItems="stretch">
+            <Grid item xs={0.5}>
+              <Typography
+                variant="h2"
+                gutterBottom
+              >{i + 1}</Typography>
             </Grid>
-          ))}
-          <IconButton title="Add Course" size="large">
-            <AddCircleOutlineOutlinedIcon fontSize="large" onClick={handlePopupClick}/>
+            <Grid item xs={5.5}>
+              <TextField
+                type="text"
+                id={`quizzTitle${i + 1}`}
+                value={listCard[i]?.key || ""}
+                onChange={(e) => handleWordChange(i, e.target.value)}
+                required
+                fullWidth
+                margin="normal"
+                label="Word"
+                name="word"
+              />
+            </Grid>
+            <Grid item xs={5.5}>
+              <TextField
+                type="text"
+                id={`quizzMeaning${i + 1}`}
+                value={listCard[i]?.value || ""}
+                onChange={(e) => handleMeaningChange(i, e.target.value)}
+                margin="normal"
+                fullWidth
+                required
+                label="Meaning"
+                name="meaning"
+              />
+            </Grid>
+            {count > 4 && (
+              <Grid item xs={0.5}>
+                <IconButton title="Delete Card" size="large">
+                  <DeleteOutlineIcon fontSize="large" onClick={() => handleDeleteClick(i)}/>
+                </IconButton>
+              </Grid>
+            )}
+          </Grid>
+        ))}
+        <Grid container justifyContent="center" alignItems="center">
+          <IconButton title="Add Card" size="large" onClick={handlePopupClick}>
+            <AddCircleOutlineOutlinedIcon fontSize="large" />
           </IconButton>
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{ mt: 3, mb: 2 }}
-          >
-            Update
-          </Button>
-        </Box>
-      </div>
+        </Grid>
+        <Grid container justifyContent="flex-end" alignItems="center" spacing={2}>
+          <Grid item>
+            <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2, mr: 8 }}>
+              Update
+            </Button>
+          </Grid>
+        </Grid>
+      </Box>
     </div>
   );
 };

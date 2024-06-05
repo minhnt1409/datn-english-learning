@@ -15,64 +15,61 @@ function CourseDetail() {
   const userId = localStorage.getItem("userId");
   const navigate = useNavigate();
 
-  const {data, refetch} = useQuery(['get-course-detail', courseId], () => {
-    return rootApi.get(path.course.getDetail({courseId}))
-  })
+  const { data, refetch } = useQuery(['get-course-detail', courseId], () => {
+    return rootApi.get(path.course.getDetail({ courseId }));
+  });
 
   useEffect(() => {
-    setIsUser(data?.data?.userId === userId)
-  }, [data])
+    setIsUser(data?.data?.userId === userId);
+  }, [data, userId]);
 
   return (
-    <>
-      <div>
-        <Header />
-        <Box mb={2} marginTop={2}>
-          <Card elevation={1}>
-            <CardContent style={{padding: 24}}>
-              <Box display="flex" justifyContent="space-between">
-                <Box style={{width: '80%'}}>
-                  <Typography
-                    variant="h2"
-                    gutterBottom
-                    style={{textOverflow: 'ellipsis', overflow: 'hidden'}}
-                  >
-                    Course: {data?.data?.title}
-                    {isUser && (
-                      <IconButton title="Edit" size="large">
-                        <EditIcon fontSize="large" onClick={() => navigate(`/update_course/${data?.data._id}`)}/>
-                      </IconButton>
-                    )}
-                  </Typography>
-
-                  <Typography>{data?.data?.description}</Typography>
-                </Box>
-                <Button onClick={() => navigate(-1)}>Back</Button>
+    <Box sx={{ minHeight: '100vh'}}>
+      <Header />
+      <Box mb={2} mt={2}>
+        <Card elevation={3} sx={{ borderRadius: '12px', padding: '16px', boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)' }}>
+          <CardContent>
+            <Box display="flex" justifyContent="space-between" alignItems="center">
+              <Box sx={{ flexGrow: 1 }}>
+                <Typography variant="h4" sx={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>
+                  Course: {data?.data?.title}
+                  {isUser && (
+                    <IconButton title="Edit" size="large" onClick={() => navigate(`/update_course/${data?.data._id}`)}>
+                      <EditIcon fontSize="large" />
+                    </IconButton>
+                  )}
+                </Typography>
+                <Typography variant="body1" color="textSecondary" sx={{ mt: 1 }}>
+                  Description: {data?.data?.description}
+                </Typography>
               </Box>
-            </CardContent>
-          </Card>
+              <Button variant="contained" onClick={() => navigate(-1)}>
+                Back
+              </Button>
+            </Box>
+          </CardContent>
+        </Card>
+      </Box>
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+        <Typography variant="h5" gutterBottom>
+          <b>Cards Data</b>
+        </Typography>
+        <Box>
+          <Button variant="contained" color="primary" sx={{ mr: 1 }} onClick={() => navigate(`/flash_card/${courseId}`)}>Go to Flash Cards</Button>
+          <Button variant="contained" color="secondary" onClick={() => navigate(`/quiz/${courseId}`)}>Go to Quiz</Button>
         </Box>
-        <Box display="flex" justifyContent="space-between" marginBottom={2}>
-          <Box style={{width: '80%'}}>
-            <Typography variant="h5" gutterBottom>
-              <b>Cards Data</b>
-            </Typography>
-          </Box>
-          <Button variant="contained" onClick={() => navigate(`/flash_card/${courseId}`)}>Go to Flash Cards</Button>
-          <Button variant="contained" onClick={() => navigate(`/quiz/${courseId}`)}>Go to Quiz</Button>
-        </Box>
-        <Grid container spacing={2} alignItems="stretch">
-          {data?.data?.cards?.map((card) => (
-            <Grid item xs={2} key={card._id}>
-              <CardItem
-                key_card={card?.key}
-                value={card?.value}
-              />
-            </Grid>
-          ))}
-        </Grid>
-      </div>
-    </>
+      </Box>
+      <Grid container spacing={3}>
+        {data?.data?.cards?.map((card) => (
+          <Grid item xs={12} sm={6} md={4} lg={3} key={card._id}>
+            <CardItem
+              key_card={card?.key}
+              value={card?.value}
+            />
+          </Grid>
+        ))}
+      </Grid>
+    </Box>
   );
 }
 

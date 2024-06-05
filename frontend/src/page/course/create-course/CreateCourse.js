@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from "react";
-import {Typography, Card, CardContent, Box, Button, TextField, IconButton, Grid} from '@mui/material';
+import React, { useState } from "react";
+import { Typography, Card, CardContent, Box, Button, TextField, IconButton, Grid } from '@mui/material';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { showMessage } from "../../../components/show_message/ShowMessage";
 import Header from '../../../components/Header';
+import Light from "../../../components/Light";
 
-const Create_quiz = () => {
+const CreateCourse = () => {
   const navigate = useNavigate();
   const [count, setCount] = useState(4);
   const [listCard, setListCard] = useState([]);
@@ -19,7 +20,6 @@ const Create_quiz = () => {
 
   const handleDeleteClick = (index) => {
     if (count > 4) {
-      console.log(index);
       const newCards = listCard.filter((_, i) => i !== index);
       setListCard(newCards);
       setCount(count - 1);
@@ -49,7 +49,7 @@ const Create_quiz = () => {
         showMessage("Error", "Created Fail", "danger")
       }
     } catch (error) {
-      console.log(error);
+      console.error("Error creating course:", error);
       showMessage("Error", "Created Fail", "danger")
     }
   };
@@ -68,108 +68,102 @@ const Create_quiz = () => {
 
   return (
     <div>
-      <div>
-        <Header />
-        <Box mb={2} marginTop={2} borderRadius={30}>
-          <Card elevation={1}>
-            <CardContent style={{padding: 24}}>
-              <Box display="flex" justifyContent="space-between">
-                <Box style={{width: '80%'}}>
-                  <Typography
-                    variant="h2"
-                    gutterBottom
-                    style={{textOverflow: 'ellipsis', overflow: 'hidden'}}
-                  >
-                    Create Course
-                  </Typography>
-
-                  <Typography>Create a new course</Typography>
-                </Box>
-                <Button onClick={() => navigate(-1)}>Back</Button>
+      <Header />
+      <Box mb={2} marginTop={2}>
+        <Card elevation={3} sx={{ borderRadius: '12px', padding: '16px', backgroundColor: '#fff', boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)' }}>
+          <CardContent style={{ padding: 24 }}>
+            <Box display="flex" justifyContent="space-between" alignItems="center">
+              <Box style={{ width: '80%' }}>
+                <Typography variant="h2" gutterBottom>
+                  Create Course
+                </Typography>
+                <Typography>Create a new course</Typography>
               </Box>
-            </CardContent>
-          </Card>
-        </Box>
-        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="title"
-            label="Title"
-            name="title"
-            autoComplete="title"
-            autoFocus
-          />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            name="description"
-            label="Description"
-            type="description"
-            id="description"
-            autoComplete="current-description"
-          />
-          <Typography>List Cards</Typography>
-          {Array.from({ length: count }).map((_, i) => (
-            <Grid container spacing={1} alignItems="stretch">
-              <Grid item xs={1}>
-                <Typography
-                  variant="h2"
-                  gutterBottom
-                >{i + 1}</Typography>
-              </Grid>
-              <Grid item xs={5}>
-                <TextField
-                  type="text"
-                  id={`quizzTitle${i + 1}`}
-                  value={listCard[i]?.key || ""}
-                  onChange={(e) => handleWordChange(i, e.target.value)}
-                  required
-                  fullWidth
-                  margin="normal"
-                  label="Word"
-                  name="word"
-                />
-              </Grid>
-              <Grid item xs={5}>
-                <TextField
-                  type="text"
-                  id={`quizzMeaning${i + 1}`}
-                  value={listCard[i]?.value || ""}
-                  onChange={(e) => handleMeaningChange(i, e.target.value)}
-                  margin="normal"
-                  fullWidth
-                  required
-                  label="Meaning"
-                  name="meaning"
-                />
-              </Grid>
-              {count > 4 && (
-                <Grid item xs={1}>
-                  <IconButton title="Add Course" size="large">
-                    <DeleteOutlineIcon fontSize="large" onClick={() => handleDeleteClick(i)}/>
-                  </IconButton>
-                </Grid>
-              )}
+              <Button onClick={() => navigate(-1)} variant="contained">
+                Back
+              </Button>
+            </Box>
+          </CardContent>
+        </Card>
+      </Box>
+      <Box component="form" onSubmit={handleSubmit} noValidate sx={{ borderRadius: '12px', padding: '16px', mt: 1, background: "#fff" }}>
+        <Light title={"Information"} />
+        <TextField
+          margin="normal"
+          required
+          fullWidth
+          id="title"
+          label="Title"
+          name="title"
+          autoComplete="title"
+          autoFocus
+        />
+        <TextField
+          margin="normal"
+          required
+          fullWidth
+          name="description"
+          label="Description"
+          type="description"
+          id="description"
+          autoComplete="current-description"
+        />
+        <Light title={"List Cards"} />
+        {Array.from({ length: count }).map((_, i) => (
+          <Grid key={i} container spacing={1} alignItems="center" justifyContent="center">
+            <Grid item xs={0.5}>
+              <Typography variant="h6">{i + 1}</Typography>
             </Grid>
-          ))}
-          <IconButton title="Add Course" size="large">
-            <AddCircleOutlineOutlinedIcon fontSize="large" onClick={handlePopupClick}/>
+            <Grid item xs={5.5}>
+              <TextField
+                type="text"
+                id={`quizzTitle${i + 1}`}
+                value={listCard[i]?.key || ""}
+                onChange={(e) => handleWordChange(i, e.target.value)}
+                required
+                fullWidth
+                margin="normal"
+                label="Word"
+                name="word"
+              />
+            </Grid>
+            <Grid item xs={5.5}>
+              <TextField
+                type="text"
+                id={`quizzMeaning${i + 1}`}
+                value={listCard[i]?.value || ""}
+                onChange={(e) => handleMeaningChange(i, e.target.value)}
+                margin="normal"
+                fullWidth
+                required
+                label="Meaning"
+                name="meaning"
+              />
+            </Grid>
+            {count > 4 && (
+              <Grid item xs={0.5}>
+                <IconButton title="Delete Card" size="large" onClick={() => handleDeleteClick(i)}>
+                  <DeleteOutlineIcon fontSize="large" />
+                </IconButton>
+              </Grid>
+            )}
+          </Grid>
+        ))}
+        <Grid container justifyContent="center" alignItems="center">
+          <IconButton title="Add Card" size="large" onClick={handlePopupClick}>
+            <AddCircleOutlineOutlinedIcon fontSize="large" />
           </IconButton>
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{ mt: 3, mb: 2 }}
-          >
-            Create
-          </Button>
-        </Box>
-      </div>
+        </Grid>
+        <Grid container justifyContent="flex-end" alignItems="center" spacing={2}>
+          <Grid item>
+            <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2, mr: 8 }}>
+              Create
+            </Button>
+          </Grid>
+        </Grid>
+      </Box>
     </div>
   );
 };
 
-export default Create_quiz;
+export default CreateCourse;
