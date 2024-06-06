@@ -1,7 +1,7 @@
 import React from "react";
 import { Grid, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { styled, useTheme } from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   backgroundColor: theme.palette.primary.main,
@@ -19,7 +19,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 function ListFolders({ folders, handleDeleteFolder }) {
-  const theme = useTheme();
 
   return (
     <Grid container spacing={3}>

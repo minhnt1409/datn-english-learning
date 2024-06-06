@@ -4,17 +4,13 @@ import PropTypes from 'prop-types';
 import {
   Typography,
   SvgIcon,
-  Card,
-  CardContent,
   AppBar,
   Toolbar,
   Box,
-  Button,
   Container,
   Menu,
   MenuItem,
   Avatar,
-  Stack,
   Tooltip,
   IconButton,
   Tab,
@@ -59,7 +55,6 @@ function a11yProps(index) {
 
 const Admin = () => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("users");
   const [users, setUsers] = useState([]);
   const [folders, setFolders] = useState([]);
   const [courses, setCourses] = useState([]);
