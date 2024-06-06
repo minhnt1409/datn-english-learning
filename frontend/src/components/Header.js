@@ -52,7 +52,7 @@ function AppAppBar() {
         localStorage.removeItem('userId');
         localStorage.removeItem('role');
         localStorage.removeItem('avatar');
-        navigate('/sign-in');
+        navigate('/sign_in');
       } else {
         showMessage('Error', 'Logout Fail', 'danger');
       }
@@ -267,7 +267,7 @@ function AppAppBar() {
                     variant="text"
                     size="small"
                     component="a"
-                    href="/sign-in/"
+                    href="/sign_in/"
                     target="_blank"
                   >
                     Sign in

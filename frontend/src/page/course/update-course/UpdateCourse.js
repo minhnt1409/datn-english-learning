@@ -44,7 +44,7 @@ const UpdateCourse = () => {
       fetchCourses();
     } else {
       alert("No token found. Redirecting to login.");
-      navigate("/login");
+      navigate("/sign_in");
     }
   }, [token, userId, navigate]);
 

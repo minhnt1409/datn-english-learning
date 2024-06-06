@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import {useQuery} from 'react-query'
 import { useState } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import {Typography, Grid, Card, CardContent, Box, Button, IconButton} from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import CardItem from '../../components/card/CardItem'
@@ -15,7 +15,7 @@ function CourseDetail() {
   const userId = localStorage.getItem("userId");
   const navigate = useNavigate();
 
-  const { data, refetch } = useQuery(['get-course-detail', courseId], () => {
+  const { data } = useQuery(['get-course-detail', courseId], () => {
     return rootApi.get(path.course.getDetail({ courseId }));
   });
 

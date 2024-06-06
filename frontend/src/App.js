@@ -8,14 +8,16 @@ import CreateCourse from './page/course/create-course/CreateCourse';
 import UpdateCourse from './page/course/update-course/UpdateCourse';
 import SignIn from './page/sign_in/SignIn';
 import SignUp from './page/sign_up/SignUp';
+import Admin from './page/admin/Admin';
 
 function App() {
   return (
     <Router>
       <Routes>
-      <Route path="/sign_up" element={<SignUp />} />
-      <Route path="/sign_in" element={<SignIn />} />
+        <Route path="/sign_up" element={<SignUp />} />
+        <Route path="/sign_in" element={<SignIn />} />
         <Route path="/" element={<Home />} />
+        <Route path="/admin" element={<Admin />} />
         <Route path="/folder/:folderId" element={<Folder />} />
         <Route path="/course/:courseId" element={<Course />} />
         <Route path="/update_course/:courseId" element={<UpdateCourse />} />

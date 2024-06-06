@@ -18,7 +18,7 @@ function Home() {
   useEffect(() => {
     if (!token || !userId) {
       alert('No token found. Redirecting to login.');
-      navigate('/login');
+      navigate('/sign_in');
       return;
     }
 

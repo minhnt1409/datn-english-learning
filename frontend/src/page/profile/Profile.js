@@ -50,7 +50,6 @@ function a11yProps(index) {
 
 function Profile() {
   const userIdmain = localStorage.getItem("userId");
-  const avatar = localStorage.getItem("avatar");
   const { userId } = useParams();
   const isUser = userIdmain === userId;
   const navigate = useNavigate();
