@@ -55,8 +55,8 @@ function CourseDetail() {
           <b>Cards Data</b>
         </Typography>
         <Box>
-          <Button variant="contained" color="primary" sx={{ mr: 1 }} onClick={() => navigate(`/flash_card/${courseId}`)}>Go to Flash Cards</Button>
-          <Button variant="contained" color="secondary" onClick={() => navigate(`/quiz/${courseId}`)}>Go to Quiz</Button>
+          <Button variant="contained" color="primary" sx={{ mr: 1 }} onClick={() => navigate(`flash_card`)}>Go to Flash Cards</Button>
+          <Button variant="contained" color="secondary" onClick={() => navigate(`quiz`)}>Go to Quiz</Button>
         </Box>
       </Box>
       <Grid container spacing={3}>

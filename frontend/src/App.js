@@ -9,6 +9,8 @@ import UpdateCourse from './page/course/update-course/UpdateCourse';
 import SignIn from './page/sign_in/SignIn';
 import SignUp from './page/sign_up/SignUp';
 import Admin from './page/admin/Admin';
+import FlashCard from './page/learn/FlashCard';
+import Quiz from './page/learn/Quiz';
 
 function App() {
   return (
@@ -20,6 +22,8 @@ function App() {
         <Route path="/admin" element={<Admin />} />
         <Route path="/folder/:folderId" element={<Folder />} />
         <Route path="/course/:courseId" element={<Course />} />
+        <Route path="/course/:courseId/flash_card" element={<FlashCard />} />
+        <Route path="/course/:courseId/quiz" element={<Quiz />} />
         <Route path="/update_course/:courseId" element={<UpdateCourse />} />
         <Route path="/create_course" element={<CreateCourse />} />
         <Route path="/folder/:folderId/create_course" element={<CreateCourse />} />
