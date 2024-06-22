@@ -40,7 +40,7 @@ function ListFolders({ folders, handleDeleteFolder }) {
               </TableRow>
             </TableHead>
             <TableBody>
-              {folders.map((folder, index) => (
+              {folders?.map((folder, index) => (
                 <StyledTableRow key={folder.id}>
                   <TableCell>{index + 1}</TableCell>
                   <TableCell>{folder?.title}</TableCell>

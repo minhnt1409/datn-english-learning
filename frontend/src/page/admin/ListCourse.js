@@ -40,7 +40,7 @@ function ListCourses({ courses, handleDeleteCourse }) {
               </TableRow>
             </TableHead>
             <TableBody>
-              {courses.map((course, index) => (
+              {courses?.map((course, index) => (
                 <StyledTableRow key={course._id}>
                   <TableCell>{index + 1}</TableCell>
                   <TableCell>{course?.title}</TableCell>

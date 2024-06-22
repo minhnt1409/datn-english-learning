@@ -38,7 +38,7 @@ function ListUsers({ users, handleDeleteUser }) {
               </TableRow>
             </TableHead>
             <TableBody>
-              {users.map((user, index) => (
+              {users?.map((user, index) => (
                 <StyledTableRow key={user._id}>
                   <TableCell>{index + 1}</TableCell>
                   <TableCell>{user.username}</TableCell>

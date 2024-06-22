@@ -7,6 +7,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { showMessage } from "../../../components/show_message/ShowMessage";
 import Header from '../../../components/Header';
 import Light from "../../../components/Light";
+import path from "../../../api/Api";
 
 const CreateCourse = () => {
   const navigate = useNavigate();
@@ -35,7 +36,7 @@ const CreateCourse = () => {
         headers: { Authorization: `Bearer ${token}` },
       };
 
-      const response = await axios.post('http://localhost:8000/courses/', {
+      const response = await axios.post(path.course.create, {
         title: data.get('title'),
         description: data.get('description'),
         listCards: listCard,

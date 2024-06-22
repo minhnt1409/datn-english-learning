@@ -13,6 +13,7 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
+import path from '../../api/Api';
 
 const defaultTheme = createTheme();
 
@@ -42,7 +43,7 @@ export default function SignUp() {
     formData.append('avatar', data.get('avatar'));
 
     try {
-      const response = await axios.post('http://localhost:8000/auth/register', formData, {
+      const response = await axios.post(path.auth.signUp(), formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }

@@ -7,6 +7,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { showMessage } from "../../../components/show_message/ShowMessage";
 import Header from '../../../components/Header';
 import Light from "../../../components/Light";
+import path from "../../../api/Api";
 
 const UpdateCourse = () => {
   const navigate = useNavigate();
@@ -24,7 +25,7 @@ const UpdateCourse = () => {
       const fetchCourses = async () => {
         try {
           const response = await axios.get(
-            `http://localhost:8000/courses/${courseId}`,
+            path.course.getDetail({courseId}),
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -70,7 +71,7 @@ const UpdateCourse = () => {
         headers: { Authorization: `Bearer ${token}` },
       };
 
-      const response = await axios.put(`http://localhost:8000/courses/${courseId}`, {
+      const response = await axios.put(path.course.update({courseId}), {
         title: data.get('title'),
         description: data.get('description'),
         listCards: listCard,

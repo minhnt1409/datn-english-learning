@@ -6,6 +6,7 @@ import Modal from '@mui/material/Modal';
 import TextField from '@mui/material/TextField';
 import axios from "axios";
 import { showMessage } from "../../components/show_message/ShowMessage";
+import path from '../../api/Api';
 
 const modalStyle = {
   position: 'absolute',
@@ -34,7 +35,7 @@ const BasicModal = ({ open, setOpen, action, folderId, title, description, refet
       let response;
       if (action === 'edit') {
         response = await axios.put(
-          `http://localhost:8000/folders/${folderId}`,
+          path.folder.update({folderId}),
           formDataObject,
           {
             headers: {
@@ -44,7 +45,7 @@ const BasicModal = ({ open, setOpen, action, folderId, title, description, refet
         );
       } else {
         response = await axios.post(
-          "http://localhost:8000/folders",
+          path.folder.create(),
           { ...formDataObject, userId },
           {
             headers: {

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import {useQuery} from 'react-query'
 import PropTypes from 'prop-types';
 import {
   Typography,
@@ -23,6 +24,8 @@ import ConfirmModal from "../../components/confirm/ConfirmModal";
 import ListFolders from "./ListFolder";
 import ListUsers from "./ListUser";
 import ListCourses from "./ListCourse";
+import rootApi from '../../api/rootApi'
+import path from '../../api/Api'
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -55,9 +58,6 @@ function a11yProps(index) {
 
 const Admin = () => {
   const navigate = useNavigate();
-  const [users, setUsers] = useState([]);
-  const [folders, setFolders] = useState([]);
-  const [courses, setCourses] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [modalContent, setModalContent] = useState({});
   const token = localStorage.getItem("token");
@@ -106,13 +106,13 @@ const Admin = () => {
 
   const deleteUser = async (userId) => {
     try {
-      const response = await axios.delete(`http://localhost:8000/users/${userId}`, {
+      const response = await axios.delete(path.user.delete({userId}), {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (response.status !== 200) {
         showMessage("Error", "Deleted Failed", "danger");
       } else {
-        fetchUsers();
+        refetchUser()
         showMessage("Success", "Deleted Successfully", "success");
       }
     } catch {
@@ -131,13 +131,13 @@ const Admin = () => {
 
   const deleteFolder = async (folderId) => {
     try {
-      const response = await axios.delete(`http://localhost:8000/folders/${folderId}`, {
+      const response = await axios.delete(path.folder.delete({folderId}), {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (response.status !== 200) {
         showMessage("Error", "Deleted Failed", "danger");
       } else {
-        fetchFolders();
+        refetchFolder();
         showMessage("Success", "Deleted Successfully", "success");
       }
     } catch {
@@ -156,13 +156,13 @@ const Admin = () => {
 
   const deleteCourse = async (courseId) => {
     try {
-      const response = await axios.delete(`http://localhost:8000/courses/${courseId}`, {
+      const response = await axios.delete(path.course.delete({courseId}), {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (response.status !== 200) {
         showMessage("Error", "Deleted Failed", "danger");
       } else {
-        fetchCourses();
+        refetchCourse();
         showMessage("Success", "Deleted Successfully", "success");
       }
     } catch {
@@ -186,7 +186,7 @@ const Admin = () => {
   const handleLogout = async () => {
     try {
       const response = await axios.post(
-        `http://localhost:8000/auth/logout`,
+        path.auth.logOut(),
         {},
         {
           headers: {
@@ -208,50 +208,15 @@ const Admin = () => {
     }
   };
 
-  const fetchUsers = async () => {
-    try {
-      const response = await axios.get("http://localhost:8000/users/", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (response.status === 200) {
-        setUsers(response.data);
-      }
-    } catch { }
-  };
-
-  const fetchFolders = async () => {
-    try {
-      const response = await axios.get("http://localhost:8000/folders/", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (response.status === 200) {
-        setFolders(response.data);
-      }
-    } catch { }
-  };
-
-  const fetchCourses = async () => {
-    try {
-      const response = await axios.get("http://localhost:8000/courses/", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (response.status === 200) {
-        setCourses(response.data);
-      }
-    } catch { }
-  };
-
-  useEffect(() => {
-    fetchUsers();
-  }, [token]);
-
-  useEffect(() => {
-    fetchFolders();
-  }, [token]);
-
-  useEffect(() => {
-    fetchCourses();
-  }, [token]);
+  const {data: dataUser, refetch: refetchUser} = useQuery(
+    'user-list', () => rootApi.get(path.user.getAll())
+  )
+  const {data: dataFolder, refetch: refetchFolder} = useQuery(
+    'folder-list', () => rootApi.get(path.folder.getAll())
+  )
+  const {data: dataCourse, refetch: refetchCourse} = useQuery(
+    'course-list', () => rootApi.get(path.course.getAll())
+  )
 
   return (
     <div className="admin">
@@ -354,13 +319,13 @@ const Admin = () => {
           <Tab {...a11yProps(2)} label="Courses" />
         </Tabs>
         <CustomTabPanel value={value} index={0}>
-          <ListUsers users={users} handleDeleteUser={handleDeleteUser} />
+          <ListUsers users={dataUser?.data} handleDeleteUser={handleDeleteUser} />
         </CustomTabPanel>
         <CustomTabPanel value={value} index={1}>
-          <ListFolders folders={folders} handleDeleteFolder={handleDeleteFolder}/>
+          <ListFolders folders={dataFolder?.data} handleDeleteFolder={handleDeleteFolder}/>
         </CustomTabPanel>
         <CustomTabPanel value={value} index={2}>
-        <ListCourses courses={courses} handleDeleteCourse={handleDeleteCourse} />
+        <ListCourses courses={dataCourse?.data} handleDeleteCourse={handleDeleteCourse} />
         </CustomTabPanel>
         <br />
         <br />

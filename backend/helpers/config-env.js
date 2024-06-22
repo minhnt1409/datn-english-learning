@@ -7,7 +7,3 @@ export const JWT_ACCESS_KEY = process.env.JWT_ACCESS_KEY;
 export const JWT_ACCESS_KEY_EXPIRE_TIME = process.env.JWT_ACCESS_KEY_EXPIRE_TIME;
 export const JWT_REFRESH_KEY = process.env.JWT_REFRESH_KEY;
 export const JWT_REFRESH_KEY_EXPIRE_TIME = process.env.JWT_REFRESH_KEY_EXPIRE_TIME;
-export const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || "";
-export const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || "";
-
-

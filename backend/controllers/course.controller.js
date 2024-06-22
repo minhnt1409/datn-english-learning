@@ -13,17 +13,6 @@ const getAll = async (req, res) => {
   }
 };
 
-const getMyCourses = async (req, res) => {
-  const { userId } = req.params;
-  try {
-    const courses = await Course.find({ userId });
-
-    return res.status(200).json(courses);
-  } catch (error) {
-    return res.status(500).json({ message: error });
-  }
-}
-
 const getOne = async (req, res) => {
   const { id } = req.params;
 
@@ -147,24 +136,6 @@ const deleteCourse = async (req, res) => {
   }
 };
 
-const getLatestToOldest = async (req, res, next) => {
-  try {
-    const courses = await Course.find().sort({ updatedAt: -1 });
-    return res.status(200).json(courses);
-  } catch (error) {
-    return res.status(500).json({ error });
-  }
-};
-
-const getOldestToNewest = async (req, res, next) => {
-  try {
-    const courses = await Course.find().sort({ updatedAt: 1 });
-    return res.status(200).json(courses);
-  } catch (error) {
-    return res.status(500).json({ error });
-  }
-}
-
 const getList = async (req, res) => {
   const { limit } = req.query;
 
@@ -183,12 +154,9 @@ const getList = async (req, res) => {
 
 export default {
   getAll,
-  getMyCourses,
   getOne,
   create,
   update,
   deleteCourse,
-  getLatestToOldest,
-  getOldestToNewest,
   getList,
 }

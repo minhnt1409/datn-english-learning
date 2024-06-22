@@ -5,7 +5,7 @@ import axios from 'axios'
  * Get token from state
  * @returns {string|*}
  */
-export function getToken(tokenType) {
+export function getToken() {
   try {
     const token = localStorage.getItem('token')
     if (token) {
@@ -26,7 +26,7 @@ const defaultOptions = {
   headers: {
     'Content-Type': 'application/json',
     'Access-Control-Allow-Origin': '*',
-    Authorization: `Bearer ${getToken('access_token')}`,
+    Authorization: `Bearer ${getToken()}`,
   },
   timeout: 200000,
 }

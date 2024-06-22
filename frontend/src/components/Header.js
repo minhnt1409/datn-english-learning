@@ -16,6 +16,7 @@ import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import axios from 'axios';
 import { showMessage } from '../components/show_message/ShowMessage';
+import path from '../api/Api';
 import { ReactComponent as Logo } from '../assets/svg/logo.svg';
 import Light from './Light';
 
@@ -38,7 +39,7 @@ function AppAppBar() {
   const handleLogout = async () => {
     try {
       const response = await axios.post(
-        `http://localhost:8000/auth/logout`,
+        path.auth.logOut(),
         {},
         {
           headers: {
@@ -75,7 +76,7 @@ function AppAppBar() {
 
     if (query) {
       try {
-        const response = await axios.get(`http://localhost:8000/other/search/${query}`, {
+        const response = await axios.get(path.utils.search({query}), {
           headers: {
             Authorization: `Bearer ${token}`,
           },

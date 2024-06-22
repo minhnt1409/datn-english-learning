@@ -25,31 +25,6 @@ const getOne = async (req, res) => {
   }
 };
 
-const getMyFolders = async (req, res) => {
-  try {
-    const { userId } = req.params;
-    const myFolders = await Folder.find({ userId });
-
-    return res.status(200).json(myFolders);
-  } catch (error) {
-    return res.status(500).json({ message: error });
-  }
-};
-
-// get all courses in one folder
-const getCoursesInFolder = async (req, res) => {
-  const { folderId } = req.params;
-  //console.log(folderId);
-  try {
-    const _folderId = new mongoose.Types.ObjectId(folderId);
-    const folder = await Folder.findById(_folderId).populate("courses");
-    return res.status(200).json(folder.courses);
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ message: error });
-  }
-}
-
 const create = async (req, res) => {
   const { title, description } = req.body;
   try {
@@ -164,35 +139,13 @@ const getList = async (req, res) => {
   }
 };
 
-const getLatestToOldest = async (req, res, next) => {
-  try {
-    const folders = await Folder.find().sort({ updatedAt: -1 });
-    return res.status(200).json(folders);
-  } catch (error) {
-    return res.status(500).json({ error });
-  }
-};
-
-const getOldestToNewest = async (req, res, next) => {
-  try {
-    const folders = await Folder.find().sort({ updatedAt: 1 });
-    return res.status(200).json(folders);
-  } catch (error) {
-    return res.status(500).json({ error });
-  }
-}
-
 export default {
   getAll,
-  getMyFolders,
-  getOne,
   create,
+  getOne,
   update,
   deleteFolder,
   addCourse,
   deleteCourse,
-  getCoursesInFolder,
-  getLatestToOldest,
-  getOldestToNewest,
   getList,
 }

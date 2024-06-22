@@ -24,16 +24,6 @@ const getOne = async (req, res) => {
   }
 };
 
-const create = async (req, res) => {
-  try {
-    const newUser = await new User(req.body);
-    const User = await newUser.save();
-    return res.status(201).json(User);
-  } catch (error) {
-    return res.status(500).json({ message: error });
-  }
-};
-
 const update = async (req, res) => {
   const { id } = req.params;
   try {
@@ -72,7 +62,6 @@ const deleteUser = async (req, res) => {
 export default {
   getAll,
   getOne,
-  create,
   update,
   deleteUser,
 }

@@ -13,6 +13,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from 'jwt-decode';
+import path from '../../api/Api';
 
 const defaultTheme = createTheme();
 
@@ -38,7 +39,7 @@ export default function SignIn() {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     try {
-      const response = await axios.post('http://localhost:8000/auth/login', {
+      const response = await axios.post(path.auth.signIn(), {
         email: data.get('email'),
         password: data.get('password'),
       });
