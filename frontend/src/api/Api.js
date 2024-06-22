@@ -13,6 +13,8 @@ const path = {
     getDetail: ({folderId}) => `${apiPath}/folders/${folderId}`,
     update: ({folderId}) => `${apiPath}/folders/${folderId}`,
     delete: ({folderId}) => `${apiPath}/folders/${folderId}`,
+    addCourse: ({folderId, courseId}) => `${apiPath}/folders/add-course/${folderId}/${courseId}`,
+    deleteCourse: ({folderId, courseId}) => `${apiPath}/folders/delete-course/${folderId}/${courseId}`,
   },
   course: {
     listRandom: ({userId, limit}) => `${apiPath}/courses/list/${userId}?limit=${limit}`,

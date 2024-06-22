@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from "react";
-import {useQuery} from 'react-query'
-import {Typography, Grid, Card, CardContent, Box, Button, IconButton} from '@mui/material';
+import { useQuery } from 'react-query';
+import { Typography, Grid, Card, CardContent, Box, Button, IconButton } from '@mui/material';
 import CardCourse from "../../components/card_course/CardCourse";
 import EditIcon from '@mui/icons-material/Edit';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import { useNavigate } from "react-router-dom";
 import { useParams } from 'react-router-dom';
-import FolderPopup from './FolderPopup'
+import FolderPopup from './FolderPopup';
+import AddCourseToFolder from './AddCourseToFolder';
 import Header from '../../components/Header';
-import rootApi from '../../api/rootApi'
-import path from '../../api/Api'
+import rootApi from '../../api/rootApi';
+import path from '../../api/Api';
 
 function Folder() {
   const userId = localStorage.getItem("userId");
@@ -18,8 +19,10 @@ function Folder() {
   const [isUser, setIsUser] = useState(false);
   const [open, setOpen] = useState(false);
   const [action, setAction] = useState('');
+  const [openAddCourse, setOpenAddCourse] = useState(false);
 
   const handleOpen = () => setOpen(true);
+  const handleOpenAddCourse = () => setOpenAddCourse(true);
 
   const { data, refetch } = useQuery(['get-folder-detail', folderId], () => {
     return rootApi.get(path.folder.getDetail({ folderId }));
@@ -40,6 +43,13 @@ function Folder() {
         folderId={folderId}
         refetch={refetch}
       />
+      <AddCourseToFolder
+        open={openAddCourse}
+        setOpen={setOpenAddCourse}
+        folderId={folderId}
+        folderCourses={data?.data?.courses?.map(course => course._id) || []}
+        refetchFolder={refetch}
+      />
       <Header />
       <Box mb={2} mt={2}>
         <Card elevation={3} sx={{ borderRadius: '12px', padding: '16px', backgroundColor: '#fff', boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)' }}>
@@ -56,7 +66,7 @@ function Folder() {
                       }}>
                         <EditIcon fontSize="large" />
                       </IconButton>
-                      <IconButton title="Add Course" size="large" onClick={() => navigate(`create_course`)}>
+                      <IconButton title="Add Course" size="large" onClick={handleOpenAddCourse}>
                         <AddCircleOutlineOutlinedIcon fontSize="large" />
                       </IconButton>
                     </Box>
@@ -86,6 +96,7 @@ function Folder() {
               course={course}
               refetch={refetch}
               enableAction={isUser}
+              folderId={folderId}
               action={() => navigate(`/course/${course._id}`)}
               sx={{ borderRadius: '12px', boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)' }}
             />

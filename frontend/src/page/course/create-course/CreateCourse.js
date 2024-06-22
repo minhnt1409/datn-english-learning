@@ -36,7 +36,7 @@ const CreateCourse = () => {
         headers: { Authorization: `Bearer ${token}` },
       };
 
-      const response = await axios.post(path.course.create, {
+      const response = await axios.post(path.course.create(), {
         title: data.get('title'),
         description: data.get('description'),
         listCards: listCard,
