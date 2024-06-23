@@ -1,5 +1,5 @@
 import express from "express";
-import { search } from "../controllers/other.controller.js";
+import other from "../controllers/other.controller.js";
 const router = express.Router();
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -8,7 +8,7 @@ import { dirname } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-router.get("/search/:query", search);
+router.get("/search/:query", other.search);
 
 router.get('/image/:filename', (req, res) => {
   const { filename } = req.params;
@@ -20,5 +20,8 @@ router.get('/image/:filename', (req, res) => {
     }
   });
 });
+
+router.post('/score/:courseId', other.updateCourseScore);
+router.get('/statistics', other.getStatistics);
 
 export default router;

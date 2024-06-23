@@ -139,6 +139,28 @@ const getList = async (req, res) => {
   }
 };
 
+const getFoldersCountToday = async (req, res) => {
+  const startOfDay = new Date();
+  startOfDay.setHours(0, 0, 0, 0);
+  const endOfDay = new Date();
+  endOfDay.setHours(23, 59, 59, 999);
+
+  try {
+    const countToday = await Folder.countDocuments({
+      createdAt: {
+        $gte: startOfDay,
+        $lte: endOfDay,
+      },
+    });
+
+    const totalCount = await Folder.countDocuments();
+
+    return res.status(200).json({ countToday, totalCount });
+  } catch (error) {
+    return res.status(500).json({ message: error });
+  }
+};
+
 export default {
   getAll,
   create,
@@ -148,4 +170,5 @@ export default {
   addCourse,
   deleteCourse,
   getList,
+  getFoldersCountToday,
 }

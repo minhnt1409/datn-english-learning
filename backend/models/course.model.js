@@ -24,6 +24,10 @@ const courseSchema = new mongoose.Schema({
     type: Schema.Types.ObjectId,
     ref: "user",
   },
+  highestScore: { type: Number, default: 0 },
+  latestScore: { type: Number, default: 0 },
+  latestStudyTime: { type: Date, default: null },
+  studied: { type: Boolean, default: false },
 
 }, { timestamps: true });
 

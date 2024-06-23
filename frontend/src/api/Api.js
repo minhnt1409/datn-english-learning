@@ -9,6 +9,7 @@ const path = {
   folder: {
     listRandom: ({userId, limit}) => `${apiPath}/folders/list/${userId}?limit=${limit}`,
     getAll: () => `${apiPath}/folders/`,
+    today: () => `${apiPath}/folders/today`,
     create: () => `${apiPath}/folders/`,
     getDetail: ({folderId}) => `${apiPath}/folders/${folderId}`,
     update: ({folderId}) => `${apiPath}/folders/${folderId}`,
@@ -19,6 +20,7 @@ const path = {
   course: {
     listRandom: ({userId, limit}) => `${apiPath}/courses/list/${userId}?limit=${limit}`,
     getAll: () => `${apiPath}/courses/`,
+    today: () => `${apiPath}/courses/today`,
     create: () => `${apiPath}/courses/`,
     getDetail: ({courseId}) => `${apiPath}/courses/${courseId}`,
     update: ({courseId}) => `${apiPath}/courses/${courseId}`,
@@ -31,6 +33,7 @@ const path = {
   },
   utils: {
     search: ({query}) => `${apiPath}/other/search/${query}`,
+    study: ({courseId}) => `${apiPath}/other/score/${courseId}`,
   }
 }
 

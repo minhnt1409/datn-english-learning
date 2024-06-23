@@ -54,28 +54,44 @@ function Quiz() {
     setChoices(allChoices);
   };
 
-  const handleNextQuestion = () => {
+  const handleNextQuestion = (newScore) => {
     if (currentIndex < cards.length - 1) {
       setCurrentIndex(currentIndex + 1);
       setIsChoiceQuestion(Math.random() < 0.5);
       setInputValue("");
     } else {
       setQuizCompleted(true);
+      submitResults(newScore);
     }
   };
 
   const handleChoiceAnswer = (answer) => {
     const isCorrect = answer === cards[currentIndex].value;
-    setScore(score + (isCorrect ? 1 : 0));
+    const newScore = score + (isCorrect ? 1 : 0);
+    setScore(newScore);
     setResults([...results, { question: cards[currentIndex].key, answer, isCorrect, correctAnswer: cards[currentIndex].value }]);
-    handleNextQuestion();
+    handleNextQuestion(newScore);
   };
 
   const handleInputAnswer = () => {
     const isCorrect = inputValue === cards[currentIndex].key;
-    setScore(score + (isCorrect ? 1 : 0));
+    const newScore = score + (isCorrect ? 1 : 0);
+    setScore(newScore);
     setResults([...results, { question: cards[currentIndex].value, answer: inputValue, isCorrect, correctAnswer: cards[currentIndex].key }]);
-    handleNextQuestion();
+    handleNextQuestion(newScore);
+  };
+
+  const submitResults = async (newScore) => {
+    const finalScore = (newScore / cards.length) * 10;
+
+    try {
+      await rootApi.post(path.utils.study({ courseId }), {
+        score: finalScore,
+        studyTime: Date.now(),
+      });
+    } catch (error) {
+      console.error("Error submitting quiz results:", error);
+    }
   };
 
   return (
@@ -153,16 +169,16 @@ function Quiz() {
           ) : (
             <>
               <Typography variant="h5" mt={4}>Quiz Completed!</Typography>
-              <Typography variant="h5" mt={4}>Score: {score}/{cards?.length}</Typography>
+              <Typography variant="h5" mt={4}>Score: {((score / cards?.length) * 10).toFixed(1)}/10</Typography>
               <Box component={Paper} p={2} mt={2}>
                 {results.map((result, index) => (
                   <Box key={index} display="flex" justifyContent="space-between" alignItems="center" p={1} mb={1} bgcolor={result.isCorrect ? '#e0ffe0' : '#ffe0e0'} borderRadius={1}>
                     <Grid container spacing={2} >
-                    <Grid item xs={4}><Typography variant="body1">{result.question}</Typography></Grid>
-                    <Grid item xs={4}><Typography variant="body1">{result.answer}</Typography></Grid>
-                    <Grid item xs={4}>
-                      <Typography variant="body1">{result.isCorrect ? 'Correct' : `Incorrect, The answer is: ${result.correctAnswer}`}</Typography>
-                    </Grid>
+                      <Grid item xs={4}><Typography variant="body1">{result.question}</Typography></Grid>
+                      <Grid item xs={4}><Typography variant="body1">{result.answer}</Typography></Grid>
+                      <Grid item xs={4}>
+                        <Typography variant="body1">{result.isCorrect ? 'Correct' : `Incorrect, The answer is: ${result.correctAnswer}`}</Typography>
+                      </Grid>
                     </Grid>
                   </Box>
                 ))}

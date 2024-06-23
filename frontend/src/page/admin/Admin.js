@@ -3,6 +3,7 @@ import axios from "axios";
 import {useQuery} from 'react-query'
 import PropTypes from 'prop-types';
 import {
+  Grid,
   Typography,
   SvgIcon,
   AppBar,
@@ -25,7 +26,9 @@ import ListFolders from "./ListFolder";
 import ListUsers from "./ListUser";
 import ListCourses from "./ListCourse";
 import rootApi from '../../api/rootApi'
-import path from '../../api/Api'
+import path from '../../api/Api';
+import Light from "../../components/Light";
+import Summary from "../../components/Summary";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -208,6 +211,12 @@ const Admin = () => {
     }
   };
 
+  const {data: todayFolder} = useQuery(
+    'today-folder', () => rootApi.get(path.folder.today())
+  )
+  const {data: todayCourse} = useQuery(
+    'today-course', () => rootApi.get(path.course.today())
+  )
   const {data: dataUser, refetch: refetchUser} = useQuery(
     'user-list', () => rootApi.get(path.user.getAll())
   )
@@ -304,6 +313,27 @@ const Admin = () => {
           </Toolbar>
         </Container>
       </AppBar>
+      <Grid container spacing={4} marginBottom={4}>
+        <Grid item xs={12}>
+          <Light title="Dashboard" />
+        </Grid>
+        <Grid item xs={12} lg={3}>
+          <Summary
+            label={'New folder on today'}
+            value={todayFolder?.data?.countToday}
+            total={todayFolder?.data?.totalCount}
+            change="up"
+          />
+        </Grid>
+        <Grid item xs={12} lg={3}>
+          <Summary
+            label={'New course on today'}
+            value={todayCourse?.data?.countToday}
+            total={todayCourse?.data?.totalCount}
+            change="up"
+          />
+        </Grid>
+      </Grid>
       <Box sx={{ width: '100%', bgcolor: 'background.paper', borderRadius: 2 }}>
         <Tabs
           value={value}
