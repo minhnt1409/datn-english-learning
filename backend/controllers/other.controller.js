@@ -69,54 +69,24 @@ const getStatistics = async (req, res) => {
     const studiedCourses = await Course.countDocuments({ studied: true });
     const notStudiedCourses = await Course.countDocuments({ studied: false });
 
-    // Number of courses grouped by highest score ranges
-    const coursesByScoreRange = await Course.aggregate([
-      {
-        $bucket: {
-          groupBy: "$highestScore",
-          boundaries: [0, 2, 4, 6, 8, 9, 10],
-          default: "Other",
-          output: {
-            count: { $sum: 1 },
-          },
-        },
-      },
-      {
-        $project: {
-          _id: 0,
-          range: {
-            $switch: {
-              branches: [
-                { case: { $eq: ["$_id", 0] }, then: "0-2" },
-                { case: { $eq: ["$_id", 2] }, then: "2-4" },
-                { case: { $eq: ["$_id", 4] }, then: "4-6" },
-                { case: { $eq: ["$_id", 6] }, then: "6-8" },
-                { case: { $eq: ["$_id", 8] }, then: "8-9" },
-                { case: { $eq: ["$_id", 9] }, then: "9-10" },
-              ],
-              default: "Other",
-            },
-          },
-          count: 1,
-        },
-      },
-    ]);
+    // Count courses based on their scores
+    const scoreRanges = [
+      { range: "0-2", min: 0, max: 2 },
+      { range: "2-4", min: 2, max: 4 },
+      { range: "4-6", min: 4, max: 6 },
+      { range: "6-8", min: 6, max: 8 },
+      { range: "8-9", min: 8, max: 9 },
+      { range: "9-10", min: 9, max: 10.1 },
+    ];
 
-    // Convert the result to the requested format
-    const scoreRanges = {
-      '0-2': 0,
-      '2-4': 0,
-      '4-6': 0,
-      '6-8': 0,
-      '8-9': 0,
-      '9-10': 0,
-    };
-
-    coursesByScoreRange.forEach(range => {
-      if (scoreRanges.hasOwnProperty(range.range)) {
-        scoreRanges[range.range] = range.count;
-      }
-    });
+    const courseScores = await Promise.all(
+      scoreRanges.map(async ({ range, min, max }) => {
+        const count = await Course.countDocuments({
+          highestScore: { $gte: min, $lt: max },
+        });
+        return { range, count };
+      })
+    );
 
     const results = {
       newFoldersToday,
@@ -125,7 +95,7 @@ const getStatistics = async (req, res) => {
       totalCoursesCount,
       studiedCourses,
       notStudiedCourses,
-      scoreRanges,
+      courseScores,
     };
 
     return res.status(200).json(results);

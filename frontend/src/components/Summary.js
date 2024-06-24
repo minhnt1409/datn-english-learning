@@ -9,10 +9,11 @@ const Summary = ({ label, value, total, change, onClick, bgcolor, titleColor }) 
   return (
     <Card
       sx={{
-        height: '100%',
+        height: '150px',
         cursor: onClick ? 'pointer' : 'default',
         bgcolor: bgcolor,
         boxShadow: 'none',
+        marginBottom: '10px'
       }}
       onClick={onClick}
     >

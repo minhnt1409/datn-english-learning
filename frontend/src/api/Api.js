@@ -34,6 +34,7 @@ const path = {
   utils: {
     search: ({query}) => `${apiPath}/other/search/${query}`,
     study: ({courseId}) => `${apiPath}/other/score/${courseId}`,
+    statistics: () => `${apiPath}/other/statistics`,
   }
 }
 

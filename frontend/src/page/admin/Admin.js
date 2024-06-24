@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import {useQuery} from 'react-query'
+import { useQuery } from 'react-query';
 import PropTypes from 'prop-types';
 import {
   Grid,
   Typography,
+  Card,
   SvgIcon,
   AppBar,
   Toolbar,
@@ -18,6 +19,7 @@ import {
   Tab,
   Tabs,
 } from '@mui/material';
+import { Pie, Column } from '@ant-design/plots';
 import { useNavigate } from "react-router-dom";
 import { showMessage } from "../../components/show_message/ShowMessage";
 import { ReactComponent as Logo } from '../../assets/svg/logo.svg';
@@ -25,7 +27,7 @@ import ConfirmModal from "../../components/confirm/ConfirmModal";
 import ListFolders from "./ListFolder";
 import ListUsers from "./ListUser";
 import ListCourses from "./ListCourse";
-import rootApi from '../../api/rootApi'
+import rootApi from '../../api/rootApi';
 import path from '../../api/Api';
 import Light from "../../components/Light";
 import Summary from "../../components/Summary";
@@ -109,13 +111,13 @@ const Admin = () => {
 
   const deleteUser = async (userId) => {
     try {
-      const response = await axios.delete(path.user.delete({userId}), {
+      const response = await axios.delete(path.user.delete({ userId }), {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (response.status !== 200) {
         showMessage("Error", "Deleted Failed", "danger");
       } else {
-        refetchUser()
+        refetchUser();
         showMessage("Success", "Deleted Successfully", "success");
       }
     } catch {
@@ -134,7 +136,7 @@ const Admin = () => {
 
   const deleteFolder = async (folderId) => {
     try {
-      const response = await axios.delete(path.folder.delete({folderId}), {
+      const response = await axios.delete(path.folder.delete({ folderId }), {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (response.status !== 200) {
@@ -159,7 +161,7 @@ const Admin = () => {
 
   const deleteCourse = async (courseId) => {
     try {
-      const response = await axios.delete(path.course.delete({courseId}), {
+      const response = await axios.delete(path.course.delete({ courseId }), {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (response.status !== 200) {
@@ -211,21 +213,52 @@ const Admin = () => {
     }
   };
 
-  const {data: todayFolder} = useQuery(
-    'today-folder', () => rootApi.get(path.folder.today())
-  )
-  const {data: todayCourse} = useQuery(
-    'today-course', () => rootApi.get(path.course.today())
-  )
-  const {data: dataUser, refetch: refetchUser} = useQuery(
+  const { data: statistics } = useQuery(
+    'statistics', () => rootApi.get(path.utils.statistics())
+  );
+  const { data: dataUser, refetch: refetchUser } = useQuery(
     'user-list', () => rootApi.get(path.user.getAll())
-  )
-  const {data: dataFolder, refetch: refetchFolder} = useQuery(
+  );
+  const { data: dataFolder, refetch: refetchFolder } = useQuery(
     'folder-list', () => rootApi.get(path.folder.getAll())
-  )
-  const {data: dataCourse, refetch: refetchCourse} = useQuery(
+  );
+  const { data: dataCourse, refetch: refetchCourse } = useQuery(
     'course-list', () => rootApi.get(path.course.getAll())
-  )
+  );
+
+  const pieData = [
+    { name: 'Studied', value: statistics?.data?.studiedCourses || 0 },
+    { name: 'Not Studied', value: statistics?.data?.notStudiedCourses || 0 },
+  ];
+
+  const scoreData = statistics?.data?.courseScores || [];
+
+  const configPie = {
+    data: pieData,
+    angleField: 'value',
+    colorField: 'name',
+    label: {
+      text: 'value',
+      style: {
+        fontWeight: 'bold',
+      },
+    },
+    legend: {
+      color: {
+        title: false,
+        position: 'bottom',
+        layout: { justifyContent: 'center' },
+      },
+    },
+  };
+
+  const configColumn = {
+    data: scoreData,
+    xField: 'range',
+    yField: 'count',
+    style: { maxWidth: 40 },
+    legend: false,
+  };
 
   return (
     <div className="admin">
@@ -302,9 +335,6 @@ const Admin = () => {
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}
               >
-                {/* <MenuItem onClick={() => navigate(`/profile/${userId}`)}>
-                  <Typography textAlign="center">Profile</Typography>
-                </MenuItem> */}
                 <MenuItem onClick={handleLogout}>
                   <Typography textAlign="center">Logout</Typography>
                 </MenuItem>
@@ -320,18 +350,26 @@ const Admin = () => {
         <Grid item xs={12} lg={3}>
           <Summary
             label={'New folder on today'}
-            value={todayFolder?.data?.countToday}
-            total={todayFolder?.data?.totalCount}
+            value={statistics?.data?.newFoldersToday}
+            total={statistics?.data?.totalFoldersCount}
+            change="up"
+          />
+          <Summary
+            label={'New course on today'}
+            value={statistics?.data?.newCoursesToday}
+            total={statistics?.data?.totalCoursesCount}
             change="up"
           />
         </Grid>
         <Grid item xs={12} lg={3}>
-          <Summary
-            label={'New course on today'}
-            value={todayCourse?.data?.countToday}
-            total={todayCourse?.data?.totalCount}
-            change="up"
-          />
+          <Card sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 310 }}>
+            <Pie {...configPie}/>
+          </Card>
+        </Grid>
+        <Grid item xs={12} lg={6}>
+          <Card sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 310 }}>
+            <Column {...configColumn}/>
+          </Card>
         </Grid>
       </Grid>
       <Box sx={{ width: '100%', bgcolor: 'background.paper', borderRadius: 2 }}>
@@ -352,10 +390,10 @@ const Admin = () => {
           <ListUsers users={dataUser?.data} handleDeleteUser={handleDeleteUser} />
         </CustomTabPanel>
         <CustomTabPanel value={value} index={1}>
-          <ListFolders folders={dataFolder?.data} handleDeleteFolder={handleDeleteFolder}/>
+          <ListFolders folders={dataFolder?.data} handleDeleteFolder={handleDeleteFolder} />
         </CustomTabPanel>
         <CustomTabPanel value={value} index={2}>
-        <ListCourses courses={dataCourse?.data} handleDeleteCourse={handleDeleteCourse} />
+          <ListCourses courses={dataCourse?.data} handleDeleteCourse={handleDeleteCourse} />
         </CustomTabPanel>
         <br />
         <br />
