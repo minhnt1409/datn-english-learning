@@ -14,6 +14,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from 'jwt-decode';
 import path from '../../api/Api';
+const apiPath = process.env.REACT_APP_URL_API
 
 const defaultTheme = createTheme();
 
@@ -59,7 +60,7 @@ export default function SignIn() {
       localStorage.setItem('token', token);
       localStorage.setItem('userId', userId);
       localStorage.setItem('role', role);
-      localStorage.setItem('avatar', `http://localhost:8000/other/image/${avatar}`);
+      localStorage.setItem('avatar', `${apiPath}/other/image/${avatar}`);
 
       // Parse and store the token payload
       const parsedToken = parseJwt(token);

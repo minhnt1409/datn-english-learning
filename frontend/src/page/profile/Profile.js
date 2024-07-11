@@ -19,6 +19,8 @@ import ListCourses from "./ListCourse";
 import rootApi from '../../api/rootApi';
 import path from '../../api/Api';
 
+const apiPath = process.env.REACT_APP_URL_API
+
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -74,7 +76,7 @@ function Profile() {
                 <Stack direction="row" spacing={2} alignItems="center">
                   <Avatar
                     alt="avatar"
-                    src={`http://localhost:8000/other/image/${data?.data?.avatar}`}
+                    src={`${apiPath}/other/image/${data?.data?.avatar}`}
                     sx={{ width: 150, height: 150, border: '2px solid #3f51b5' }}
                   />
                   <Typography

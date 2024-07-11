@@ -7,6 +7,7 @@ import axios from 'axios';
 import path from '../../api/Api';
 import Header from '../../components/Header';
 import Light from '../../components/Light';
+const apiPath = process.env.REACT_APP_URL_API
 
 function Home() {
   const token = localStorage.getItem('token');
@@ -60,7 +61,7 @@ function Home() {
             <CardFolder
             folder={folder}
             action={() => navigate(`/folder/${folder._id}`)}
-            avatar={`http://localhost:8000/other/image/${folder?.userId?.avatar}`}
+            avatar={`${apiPath}/other/image/${folder?.userId?.avatar}`}
           />
           </Grid>
         ))}
@@ -74,7 +75,7 @@ function Home() {
             <CardCourse
               course={course}
               action={() => navigate(`/course/${course._id}`)}
-              avatar={`http://localhost:8000/other/image/${course?.userId?.avatar}`}
+              avatar={`${apiPath}/other/image/${course?.userId?.avatar}`}
             />
           </Grid>
         ))}

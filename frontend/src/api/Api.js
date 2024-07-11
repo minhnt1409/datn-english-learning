@@ -1,4 +1,4 @@
-const apiPath = 'http://localhost:8000'
+const apiPath = process.env.REACT_APP_URL_API
 
 const path = {
   auth: {
