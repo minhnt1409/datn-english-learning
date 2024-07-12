@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: tunglt2k2/test:be-01
+          image: minhnt200409/backend
           ports:
             - containerPort: 8000
 ---
@@ -48,7 +48,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: tunglt2k2/test:fe-04
+          image: minhnt200409/frontend
           ports:
             - containerPort: 3000
           env:
